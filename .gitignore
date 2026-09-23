@@ -1,0 +1,20 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# macOS
+.DS_Store
+
+# Embeddings del modelo descartado en la comparacion (regenerables en 5 s con
+# scripts.experimento_topicos, 8,7 MB que no hacen falta para correr nada)
+data/processed/embeddings_multilingual-e5-small*
+
+# Cache de pytest
+.pytest_cache/

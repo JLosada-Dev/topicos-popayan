@@ -1,0 +1,33 @@
+[project]
+name = "topicos-popayan"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "JLosada-Dev", email = "jd.losada.dev@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "bertopic>=0.17.4",
+    "ipykernel>=7.3.0",
+    "matplotlib>=3.11.2",
+    "numpy>=2.5.3",
+    "pandas>=3.0.6",
+    "pyarrow>=25.0.1",
+    "sentence-transformers>=6.1.0",
+    "streamlit>=1.64.0",
+]
+
+[project.scripts]
+topicos-popayan = "topicos_popayan:main"
+
+[build-system]
+requires = ["uv_build>=0.12.17,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "gensim>=4.4.0",
+    "nbconvert>=7.17.1",
+    "pytest>=9.1.1",
+]
