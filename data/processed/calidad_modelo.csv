@@ -1,0 +1,5 @@
+indicador,valor,descripcion
+c_v,0.4844,"Coherencia c_v (Roder et al., 2015), media sobre los topicos"
+c_npmi,-0.0382,"Coherencia NPMI, mas conservadora que c_v"
+diversidad_top10,0.6637,Proporcion de palabras unicas entre las 10 principales de cada topico
+n_topicos,41.0,Topicos evaluados

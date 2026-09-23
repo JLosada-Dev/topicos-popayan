@@ -1,0 +1,4 @@
+min_cluster_size,min_samples,congelada,n_topicos,pct_atipicos,pct_topico_mayor,inocuidad_forma_topico,inocuidad_max_concentracion,honestidad_forma_topico,honestidad_max_concentracion,horarios_forma_topico,horarios_max_concentracion
+30,15,True,42,19.3,6.0,False,26.4,False,9.6,False,38.3
+20,10,False,74,19.2,4.4,False,11.3,False,7.7,False,21.3
+15,7,False,100,15.2,4.2,False,11.3,False,9.6,False,12.8

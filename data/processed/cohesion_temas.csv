@@ -1,0 +1,10 @@
+grupo,origen,n,cohesion,nulo,exceso
+T15 comida / pizza,topico del modelo,100,0.682,0.247,0.435
+T40 medios de pago,topico del modelo,34,0.586,0.25,0.336
+T17 patrimonio,topico del modelo,82,0.547,0.248,0.299
+T0 espera,topico del modelo,355,0.376,0.248,0.128
+T16 infraestructura y espacio,topico del modelo,89,0.364,0.249,0.115
+inocuidad,regla de recuperacion,53,0.351,0.25,0.101
+honestidad en el cobro,regla de recuperacion,52,0.336,0.247,0.089
+infraestructura y clima,regla de recuperacion,11,0.267,0.244,0.023
+horarios e informacion digital,regla de recuperacion,47,0.261,0.247,0.014

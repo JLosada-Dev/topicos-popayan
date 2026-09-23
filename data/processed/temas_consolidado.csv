@@ -1,0 +1,15 @@
+tema,tipo,topicos,n_topicos,fragmentos,pct_asignado,rating,pct_1_2_estrellas,polaridad_dominante,subtemas
+comida,atributo_esquema,"T4, T6, T11, T13, T14, T15, T20, T22, T26, T27, T28, T29, T30, T35, T36, T38",16,1500,31.4,3.83,23.9,mixta,"asiatica, bebidas, cafe, carnes, carta y menu, cocina por origen, hamburguesas, pizza, pollo asado, postres, presentacion y variedad"
+servicio,atributo_esquema,"T1, T7, T18, T23",4,690,14.5,3.78,26.5,mixta,
+experiencia global,valoracion_global,"T3, T21, T25, T32, T37",5,526,11.0,4.12,18.8,positiva,
+espera,atributo_esquema,T0,1,355,7.4,1.88,75.8,negativa,
+recomendacion,valoracion_global,"T5, T34, T39",3,347,7.3,3.47,33.1,mixta,
+ambiente,atributo_esquema,T2,1,334,7.0,4.34,11.1,positiva,
+referente en la ciudad,atributo_nuevo,"T9, T12",2,276,5.8,4.55,7.2,positiva,
+ocasion de consumo,atributo_nuevo,"T8, T24",2,223,4.7,4.58,4.9,positiva,
+patrimonio,atributo_esquema,"T17, T19",2,161,3.4,4.45,11.8,positiva,centro historico
+precio,atributo_esquema,T10,1,140,2.9,3.7,25.0,mixta,
+infraestructura y espacio,atributo_nuevo,T16,1,89,1.9,3.69,21.3,mixta,
+intencion de volver,valoracion_global,T31,1,50,1.0,4.8,4.0,positiva,
+satisfaccion,valoracion_global,T33,1,47,1.0,4.74,4.3,positiva,
+medios de pago,atributo_nuevo,T40,1,34,0.7,3.26,29.4,mixta,
