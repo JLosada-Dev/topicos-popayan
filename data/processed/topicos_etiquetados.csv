@@ -1,0 +1,42 @@
+topico_id,tema,subtema,tipo,polaridad,n,pct_corpus,rating,pct_1_2_estrellas,c_v
+0,espera,,atributo_esquema,negativa,355,6.0,1.88,75.8,0.74
+1,servicio,,atributo_esquema,mixta,355,6.0,4.09,18.6,0.583
+2,ambiente,,atributo_esquema,positiva,334,5.65,4.34,11.1,0.711
+3,experiencia global,,valoracion_global,positiva,296,5.01,4.75,2.7,0.691
+4,comida,,atributo_esquema,positiva,265,4.48,4.26,12.8,0.577
+5,recomendacion,,valoracion_global,mixta,263,4.45,4.03,18.6,0.395
+6,comida,,atributo_esquema,negativa,212,3.59,1.98,71.7,0.527
+7,servicio,,atributo_esquema,positiva,187,3.16,4.79,2.1,0.735
+8,ocasion de consumo,,atributo_nuevo,positiva,155,2.62,4.48,7.1,0.632
+9,referente en la ciudad,,atributo_nuevo,positiva,154,2.6,4.4,11.0,0.4
+10,precio,,atributo_esquema,mixta,140,2.37,3.7,25.0,0.411
+11,comida,presentacion y variedad,atributo_esquema,positiva,131,2.22,4.27,12.2,0.45
+12,referente en la ciudad,,atributo_nuevo,positiva,122,2.06,4.75,2.5,0.378
+13,comida,,atributo_esquema,positiva,115,1.94,4.5,7.8,0.33
+14,comida,,atributo_esquema,mixta,108,1.83,3.87,18.5,0.48
+15,comida,pizza,atributo_esquema,positiva,100,1.69,4.72,5.0,0.569
+16,infraestructura y espacio,,atributo_nuevo,mixta,89,1.51,3.69,21.3,0.265
+17,patrimonio,,atributo_esquema,positiva,82,1.39,4.32,14.6,0.784
+18,servicio,,atributo_esquema,negativa,79,1.34,1.7,78.5,0.624
+19,patrimonio,centro historico,atributo_esquema,positiva,79,1.34,4.58,8.9,0.327
+20,comida,bebidas,atributo_esquema,mixta,79,1.34,3.81,26.6,0.249
+21,experiencia global,,valoracion_global,positiva,77,1.3,4.73,2.6,0.761
+22,comida,hamburguesas,atributo_esquema,mixta,75,1.27,3.69,26.7,0.297
+23,servicio,,atributo_esquema,negativa,69,1.17,1.81,73.9,0.617
+24,ocasion de consumo,,atributo_nuevo,positiva,68,1.15,4.82,0.0,0.695
+25,experiencia global,,valoracion_global,negativa,66,1.12,1.73,81.8,0.371
+26,comida,carnes,atributo_esquema,positiva,64,1.08,4.3,9.4,0.498
+27,comida,asiatica,atributo_esquema,mixta,58,0.98,2.98,44.8,0.463
+28,comida,cafe,atributo_esquema,positiva,58,0.98,4.48,6.9,0.301
+29,comida,cocina por origen,atributo_esquema,positiva,56,0.95,4.43,7.1,0.293
+30,comida,postres,atributo_esquema,positiva,53,0.9,4.51,11.3,0.337
+31,intencion de volver,,valoracion_global,positiva,50,0.85,4.8,4.0,0.381
+32,experiencia global,,valoracion_global,negativa,49,0.83,2.33,61.2,0.413
+33,satisfaccion,,valoracion_global,positiva,47,0.79,4.74,4.3,0.478
+34,recomendacion,,valoracion_global,negativa,46,0.78,1.89,73.9,0.398
+35,comida,pollo asado,atributo_esquema,negativa,44,0.74,2.43,59.1,0.394
+36,comida,carta y menu,atributo_esquema,mixta,44,0.74,4.18,11.4,0.276
+37,experiencia global,,valoracion_global,positiva,38,0.64,4.39,13.2,0.419
+38,comida,,atributo_esquema,positiva,38,0.64,4.42,10.5,0.305
+39,recomendacion,,valoracion_global,negativa,38,0.64,1.53,84.2,0.646
+40,medios de pago,,atributo_nuevo,mixta,34,0.58,3.26,29.4,0.661
