@@ -1564,3 +1564,65 @@ publicarlo.
 `docs/notebooks_html/` con los cuatro HTML (2,3 MB en total).
 `scripts/exportar_notebooks.py` nuevo. README con la subsección «Versión HTML, para
 anexar al informe».
+
+---
+
+## 2026-09-24 — Notebooks versionados con sus salidas
+
+**Qué se hizo.** Los cuatro notebooks de `notebooks/` quedan versionados **con sus
+salidas guardadas**, para que se lean en GitHub o en Jupyter sin ejecutarlos. Antes solo
+existía la versión HTML.
+
+### Una ejecución en vez de dos
+
+`scripts/exportar_notebooks.py` se reestructuró. Antes exportaba a HTML con `--execute`,
+lo que ejecutaba los notebooks pero **no guardaba las salidas en el `.ipynb`**. Ahora:
+
+1. `--to notebook --execute --inplace` guarda las salidas en el propio notebook.
+2. El HTML se genera **a partir de ese archivo ya ejecutado**, sin volver a ejecutar.
+
+Además de ahorrar una ejecución, garantiza que los dos formatos muestren exactamente las
+mismas cifras, que es justo lo que no aseguraba ejecutar dos veces: entre una corrida y
+otra podrían cambiar los datos.
+
+### Se limpia el ruido de stderr
+
+La celda que carga el modelo de BERTopic en `02_topicos` dejaba cinco salidas de
+`stderr`: un aviso de tqdm, otro del hub de modelos y dos barras de progreso. No son
+resultados y además **delataban la ruta local absoluta** de quien ejecutó el notebook.
+
+El script las elimina después de ejecutar. Solo toca `stderr`: los resultados, la salida
+estándar y los errores reales quedan intactos, y de todas formas un error haría fallar
+la ejecución antes de llegar a este paso.
+
+### Estado de los archivos
+
+| Notebook | `.ipynb` | Salidas | Imágenes | HTML |
+|---|---:|---:|---:|---:|
+| `00_preparacion` | 36 KB | 12 | 0 | 322 KB |
+| `01_caracterizacion` | 227 KB | 14 | 1 | 518 KB |
+| `02_topicos` | 183 KB | 12 | 1 | 448 KB |
+| `03_evaluacion` | 718 KB | 17 | 2 | 1.008 KB |
+
+Las **50 celdas de código** de los cuatro notebooks tienen salida, con cero errores y
+cero salidas de `stderr`.
+
+**Los de `notebooks/colab/` siguen sin salidas, a propósito.** Están pensados para
+ejecutarse en Colab; si se ejecutaran en local, sus primeras celdas mostrarían «no se
+detectó Colab: se asume el entorno de uv», que en un notebook cuyo propósito es Colab
+confundiría más de lo que aporta.
+
+### Verificación
+
+- Las 4 imágenes están guardadas dentro de los `.ipynb` como PNG en base64.
+- **Consistencia entre formatos**: se comparó cada línea de salida de texto de los
+  `.ipynb` contra el HTML —desescapando las entidades, porque `'` viaja como `&#39;` y
+  `>=` como `&gt;=`— y cada imagen por su base64. **134 líneas y 4 imágenes, ninguna
+  falta.**
+- El HTML sigue sin referencias externas.
+
+### Orden que hay que respetar
+
+`scripts/generar_notebooks.py` reescribe los notebooks **sin** salidas, porque genera
+desde el contenido fuente. Si se cambia el contenido: generar primero, ejecutar después.
+Queda anotado en el README y en el docstring del script.

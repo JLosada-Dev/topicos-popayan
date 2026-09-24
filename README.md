@@ -82,12 +82,17 @@ no puedan divergir:
 uv run python -m scripts.generar_notebooks
 ```
 
-### Versión HTML, para anexar al informe
+### Notebooks ya ejecutados
 
-`docs/notebooks_html/` tiene los cuatro notebooks exportados **con sus salidas ya
-ejecutadas**: tablas, cifras y figuras. Se abren con doble clic en cualquier navegador y
-**no requieren instalar nada, ejecutar nada ni tener conexión** — las figuras van
-incrustadas en el propio archivo y no hay ninguna referencia externa.
+**Los `.ipynb` de `notebooks/` se versionan con sus salidas guardadas**, así que se
+leen en GitHub o en Jupyter sin ejecutarlos. Los de `notebooks/colab/` van sin salidas
+a propósito: están pensados para ejecutarse en Colab, y unas salidas producidas en local
+solo confundirían.
+
+`docs/notebooks_html/` tiene además la versión HTML, para anexar al informe. Se abre con
+doble clic en cualquier navegador y **no requiere instalar nada, ejecutar nada ni tener
+conexión**: las figuras van incrustadas en el propio archivo y no hay ninguna referencia
+externa.
 
 | Archivo | Tamaño |
 |---|---:|
@@ -96,14 +101,19 @@ incrustadas en el propio archivo y no hay ninguna referencia externa.
 | `02_topicos.html` | 450 KB |
 | `03_evaluacion.html` | 1,0 MB |
 
-Para regenerarlos después de cambiar un notebook o los datos:
+Para regenerar ambos formatos después de cambiar un notebook o los datos:
 
 ```bash
 uv run python -m scripts.exportar_notebooks
 ```
 
-El script vuelve a ejecutar cada notebook antes de exportarlo, de modo que lo que se
-anexa corresponde siempre al estado actual de `data/processed/`.
+El script ejecuta cada notebook **una sola vez**: guarda las salidas en el `.ipynb` y
+genera el HTML a partir de ese archivo ya ejecutado, de modo que los dos formatos
+muestran siempre las mismas cifras. De paso quita las salidas de `stderr`, que son
+avisos del entorno y no resultados.
+
+> Ojo con el orden: `scripts/generar_notebooks.py` reescribe los notebooks **sin**
+> salidas. Si cambias su contenido, genera primero y ejecuta después.
 
 ### Ejecutar en local
 
