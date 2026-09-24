@@ -1504,3 +1504,63 @@ exactamente lo que ya mostraba el análisis de cohesión.
 `tfidf_vocabulario.csv` y `tfidf_indice.csv`. `src/topicos.py` expone `PATRON_TOKEN`,
 que antes estaba escrito dentro de la llamada al vectorizador. README con la subsección
 «El explorador».
+
+---
+
+## 2026-09-24 — Notebooks exportados a HTML
+
+**Qué se hizo.** Los cuatro notebooks exportados a `docs/notebooks_html/` con sus
+salidas ya ejecutadas, para anexarlos al informe sin que el lector tenga que instalar ni
+ejecutar nada. El script es `scripts/exportar_notebooks.py`.
+
+**Se vuelven a ejecutar antes de exportar**, en vez de reutilizar salidas guardadas, de
+modo que lo que se anexa corresponda al estado actual de `data/processed/`. Los cuatro
+corrieron sin errores.
+
+| Archivo | Tamaño | Figuras | Tablas |
+|---|---:|---:|---:|
+| `00_preparacion.html` | 322 KB | 0 | 5 |
+| `01_caracterizacion.html` | 518 KB | 1 | 7 |
+| `02_topicos.html` | 450 KB | 1 | 7 |
+| `03_evaluacion.html` | 1.008 KB | 2 | 7 |
+
+`00_preparacion` no muestra ninguna figura; las cuatro del informe se reparten entre los
+otros tres notebooks.
+
+### Se quitaron los enlaces a CDN
+
+nbconvert enlaza MathJax y require.js desde `cdnjs.cloudflare.com`. Se comprobó que el
+contenido no los necesita —cero usos de `require()` y cero fórmulas LaTeX en los cuatro
+notebooks—, así que el script los elimina después de exportar. **Los HTML quedan con
+cero referencias externas**: se leen sin conexión, que es lo que hace falta en un anexo.
+
+### Verificación
+
+No basta con que el archivo exista; había que comprobar que se vea:
+
+- **Figuras**: se extrajeron las cuatro imágenes de su base64 y se comprobó que son PNG
+  válidos con las dimensiones de las figuras originales (2.254 × 1.414, 2.193 × 784,
+  2.254 × 1.834 y 2.314 × 1.594). Una se abrió para mirarla: se ve completa, con sus
+  etiquetas y su leyenda.
+- **Tablas**: se extrajo el contenido de celdas de una tabla y trae los datos reales
+  (`c_v 0.4844`, `c_npmi -0.0382`, `diversidad_top10 0.6637`).
+- **Salidas de texto**: las tablas impresas con `to_string` aparecen dentro de `<pre>`,
+  con su alineación.
+- **Markdown**: los encabezados de sección se renderizan como `<h1>` y `<h2>`.
+- **Valores esperados**: se buscaron cifras y términos concretos en cada archivo
+  (5.913 y 2.430 en el 00, el fragmento en árabe en el 01, `min_cluster_size` en el 02,
+  `0.4056` e `inocuidad` en el 03). Todos presentes.
+- **Errores**: cero `jp-RenderedError` y cero trazas en los cuatro archivos.
+
+### Sobre el enlace al repositorio
+
+**No se publicó.** El repositorio es local y no tiene remoto configurado, y publicar es
+una acción que saca el trabajo fuera de la máquina, así que queda pendiente de decisión
+explícita. El README no lleva enlace por ahora; se añadirá cuando se decida dónde
+publicarlo.
+
+### Estado
+
+`docs/notebooks_html/` con los cuatro HTML (2,3 MB en total).
+`scripts/exportar_notebooks.py` nuevo. README con la subsección «Versión HTML, para
+anexar al informe».

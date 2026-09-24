@@ -38,6 +38,7 @@ data/
   processed/  fragmentos, embeddings, modelo, tablas de resultados
 figuras/      figuras del informe en PNG y PDF a 300 dpi
 docs/         bitácora, evidencia por tópico, decisiones metodológicas
+  notebooks_html/  los cuatro notebooks en HTML, con sus salidas, para anexar al informe
 tests/        pytest
 ```
 
@@ -80,6 +81,29 @@ no puedan divergir:
 ```bash
 uv run python -m scripts.generar_notebooks
 ```
+
+### Versión HTML, para anexar al informe
+
+`docs/notebooks_html/` tiene los cuatro notebooks exportados **con sus salidas ya
+ejecutadas**: tablas, cifras y figuras. Se abren con doble clic en cualquier navegador y
+**no requieren instalar nada, ejecutar nada ni tener conexión** — las figuras van
+incrustadas en el propio archivo y no hay ninguna referencia externa.
+
+| Archivo | Tamaño |
+|---|---:|
+| `00_preparacion.html` | 322 KB |
+| `01_caracterizacion.html` | 518 KB |
+| `02_topicos.html` | 450 KB |
+| `03_evaluacion.html` | 1,0 MB |
+
+Para regenerarlos después de cambiar un notebook o los datos:
+
+```bash
+uv run python -m scripts.exportar_notebooks
+```
+
+El script vuelve a ejecutar cada notebook antes de exportarlo, de modo que lo que se
+anexa corresponde siempre al estado actual de `data/processed/`.
 
 ### Ejecutar en local
 
