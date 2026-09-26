@@ -117,3 +117,44 @@ def test_nombres_de_tema_legibles():
 
     assert legible("ocasion de consumo") == "ocasión de consumo"
     assert legible("comida") == "comida"          # sin cambio cuando no hace falta
+
+
+def test_las_once_pantallas_de_presentacion_existen():
+    from app import presentacion
+
+    assert len(presentacion.TITULOS) == 11
+
+
+def test_la_navegacion_no_se_sale_de_rango():
+    import streamlit as st
+
+    from app import presentacion
+
+    st.session_state = {}
+    for pedido, esperado in [(-5, 0), (0, 0), (10, 10), (99, 10)]:
+        presentacion._ir_a(pedido)
+        assert st.session_state[presentacion.CLAVE_PANTALLA] == esperado
+
+
+def test_el_acceso_al_explorador_precarga_la_consulta():
+    import streamlit as st
+
+    from app import busqueda, presentacion
+
+    st.session_state = {}
+    presentacion._al_explorador()
+    assert st.session_state["seccion"] == "Explorador"
+    assert st.session_state["consulta"] == presentacion.CONSULTA_DEMO
+    # Y esa consulta tiene que devolver algo, o la demostracion en vivo falla
+    tabla, _, _ = busqueda.buscar_tfidf(presentacion.CONSULTA_DEMO, 3)
+    assert not tabla.empty
+
+
+def test_la_presentacion_usa_las_figuras_existentes():
+    from app import datos, presentacion
+
+    fuente = (datos.RAIZ / "app" / "presentacion.py").read_text(encoding="utf-8")
+    for figura in ("04_embudo_corpus", "03_mapa_topico_dimension",
+                   "01_distribucion_por_tipo", "02_temas_por_rating"):
+        assert figura in fuente, figura
+        assert datos.figura(f"{figura}.png").exists()

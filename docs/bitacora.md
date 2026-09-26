@@ -1913,3 +1913,74 @@ Los notebooks no se tocaron, como se pidió.
 
 **Pendiente**: no se pudo revisar el gráfico renderizado en el navegador, porque esta
 sesión no tiene esa herramienta. La verificación es estructural.
+
+---
+
+## 2026-09-25 — Sección Presentación en el dashboard
+
+**Qué se hizo.** Once pantallas para proyectar en una sustentación de 15 minutos, en
+`app/presentacion.py`. Una idea por pantalla, tipografía grande, sin tablas anchas ni
+salidas de código. Las demás secciones quedan intactas para explorar después.
+
+### Dos decisiones consultadas antes de implementar
+
+**El mapa de calor.** Son 15 filas × 6 columnas con un número por celda: proyectado no se
+lee. Se optó por que **el titular sea el AMI** —0,41 sobre una línea base de 0,00— con el
+contraste espera 62,7 % contra comida 11,8 %, y el mapa debajo como respaldo visual.
+
+A petición del autor, el titular **interpreta** el contraste en vez de solo enunciarlo:
+«la espera se comporta como una categoría bien definida; la comida, como un dominio
+entero que el modelo descompone en dieciséis tópicos». Ojo con las dos cifras, que son
+distintas y conviene no confundir: **16** son los tópicos cuyo *tema* es comida, y **38**
+los tópicos que contienen algún fragmento que activa la dimensión comida.
+
+**Objetivo y pregunta.** Se mantienen como pantallas separadas: la 3 enuncia los tres
+objetivos específicos, que es lo que el jurado espera ver, y la 4 plantea la pregunta
+como hipótesis contrastable junto con la medida que la responde.
+
+### Dos decisiones propias, aprobadas
+
+En **Recomendaciones** se conserva solo la audiencia del establecimiento —el notebook
+tiene tres— porque es lo que dice el objetivo general y porque tres audiencias no caben
+en una pantalla proyectada. En la **11** las limitaciones van arriba y el cierre abajo,
+para no terminar la sustentación en tono de disculpa.
+
+### Reparto de las figuras
+
+| Pantalla | Figura |
+|---|---|
+| 5 · Los datos | Embudo del corpus |
+| 7 · Resultados | Mapa de calor tópico × dimensión |
+| 8 · Atributos emergentes | Distribución por tipo, más una vista propia |
+| 9 · Insights | Temas por calificación |
+
+La distribución por tipo se trasladó de Resultados a Atributos emergentes. Es el montaje
+natural de esa pantalla —muestra el 13 % que el esquema no contempla— y además descarga
+Resultados, que con el AMI y el mapa ya tiene bastante para 80 segundos.
+
+La **vista de atributos emergentes** es la única que no existía como figura: barras
+horizontales de los cuatro temas por calificación, con la media del corpus como
+referencia. Se hizo en Altair, como el gráfico de la sección Temas, para no añadir
+dependencias.
+
+### Demostración en vivo
+
+La pantalla de Resultados lleva un botón que **salta al explorador con la consulta
+«comida en mal estado» ya escrita**. Sirve para enseñar en directo el límite de la
+técnica: TF-IDF devuelve «el restaurante es de los mejores en los que he estado», porque
+«estado» coincide como participio.
+
+El salto se implementó con un callback que escribe `st.session_state["seccion"]` y
+`st.session_state["consulta"]`; para que funcione, el selector de sección de la barra
+lateral pasó a tener `key="seccion"`.
+
+### Verificación
+
+Las once pantallas se ejecutan sin errores. La navegación se comprobó en los bordes:
+`_ir_a(-5)` da 0 y `_ir_a(99)` da 10. El salto al explorador deja la consulta cargada y
+esa consulta devuelve resultados, que es lo que hace falta para que la demostración no
+falle delante del jurado. **83 pruebas pasan**, cuatro de ellas nuevas y específicas de
+esta sección.
+
+**Pendiente**: no se pudo revisar la presentación proyectada ni en el navegador, porque
+esta sesión no tiene esa herramienta. La verificación es estructural.

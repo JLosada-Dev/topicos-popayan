@@ -80,6 +80,7 @@ nada ni carga el modelo.
 
 | Sección | Qué muestra |
 |---|---|
+| **Presentación** | Once pantallas para proyectar en una sustentación de 15 minutos |
 | **Resumen** | El embudo, los indicadores clave y dos figuras |
 | **Temas** | Tabla ordenable de los 14 temas; al elegir uno, sus tópicos y ejemplos |
 | **Tópicos** | Los 10 términos de cada tópico, su concentración por local y 5 fragmentos |
@@ -87,6 +88,12 @@ nada ni carga el modelo.
 | **Explorador** | Buscador libre, con coincidencia de palabras y con significado, comparables |
 
 Cada indicador lleva una línea que lo explica sin jerga.
+
+La sección **Presentación** sigue la cadena contexto → problema → objetivos → pregunta →
+datos → técnicas → resultados → atributos emergentes → insights → recomendaciones →
+limitaciones y cierre, con navegación adelante y atrás y un selector para saltar a
+cualquier pantalla. Desde la pantalla de resultados se puede saltar al explorador con una
+consulta precargada, para demostrar en vivo el límite de la técnica.
 
 ---
 

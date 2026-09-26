@@ -13,9 +13,10 @@ import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from app import datos, secciones  # noqa: E402
+from app import datos, presentacion, secciones  # noqa: E402
 
 SECCIONES = {
+    "Presentación": presentacion.presentacion,
     "Resumen": secciones.resumen,
     "Temas": secciones.temas,
     "Tópicos": secciones.topicos,
@@ -44,7 +45,8 @@ def main() -> None:
             "Trabajo final de Text & Web Analytics · Especialización en Data Analytics "
             "para Marketing Digital, FUP"
         )
-        eleccion = st.radio("Sección", list(SECCIONES), label_visibility="collapsed")
+        eleccion = st.radio("Sección", list(SECCIONES), label_visibility="collapsed",
+                            key="seccion")
         st.divider()
         st.caption(
             "Los resultados están calculados de antemano: este panel solo los muestra. "
