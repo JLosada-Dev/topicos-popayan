@@ -101,6 +101,8 @@ def _p1_contexto() -> None:
 <h1>Temas emergentes en las reseñas gastronómicas de Popayán</h1>
 <p class="tenue">Trabajo final · Text &amp; Web Analytics<br>
 Especialización en Data Analytics para Marketing Digital · FUP</p>
+<p class="destacado" style="margin-top:1.2rem">José David Losada Legarda
+<span class="tenue" style="font-weight:400"> · 76261004</span></p>
 """)
     st.divider()
     columnas = st.columns(3)

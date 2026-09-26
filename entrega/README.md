@@ -3,6 +3,8 @@
 Trabajo final de Text & Web Analytics · Especialización en Data Analytics para Marketing
 Digital, FUP.
 
+**Estudiante:** José David Losada Legarda · 76261004
+
 **El informe se entrega por separado**, no está en este paquete.
 
 ## De qué trata
@@ -29,9 +31,8 @@ crítico.
 
 - **`1_notebook/`** — `proyecto_final.ipynb`, el estudio completo: problema, objetivo,
   pregunta analítica, datos, técnicas, resultados, insights y recomendaciones. Ya viene
-  ejecutado, con todas sus salidas y figuras. **Súbelo a Google Colab y pulsa
-  «Ejecutar todas»**: la primera celda descarga el proyecto sola, no hay que instalar
-  nada ni subir archivos.
+  ejecutado, con todas sus salidas y figuras. Si quieres volver a ejecutarlo, las
+  instrucciones para Colab están en la primera celda del propio notebook.
   - **`html/`** — el mismo estudio más los cuatro notebooks por etapa, que son el anexo
     metodológico, en formato HTML.
 - **`2_dataset/`** — cinco archivos de datos, el diccionario que describe cada columna y

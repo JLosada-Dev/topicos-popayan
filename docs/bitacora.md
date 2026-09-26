@@ -2350,3 +2350,25 @@ que es lo que hará el revisor:
 
 Una versión anterior de esta prueba falló con «No se encontró el proyecto desde el
 directorio actual», que es justo el fallo que el revisor habría visto.
+
+---
+
+## 2026-09-26 — Autoría e instrucciones de ejecución
+
+**Autoría.** Se añadió «José David Losada Legarda · 76261004» en los tres sitios donde
+aparece la cabecera del trabajo: el README del paquete, la portada del notebook
+consolidado y la primera pantalla de la presentación. El autor pidió el primero; los
+otros dos se añadieron porque llevan la misma cabecera y, en un trabajo académico, el
+nombre debe ir en el documento y en la sustentación, no solo en el índice del paquete.
+
+**Instrucciones de ejecución.** La nota que abría la versión ejecutable decía «súbela y
+pulsa ejecutar todas», que da por sabido cómo se usa Colab. Ahora son cuatro pasos
+numerados, e incluyen el que más atasca a quien no lo usa a diario: **Colab avisa de que
+el notebook no lo creó Google y hay que pulsar «Ejecutar de todos modos»**. Sin ese aviso
+mucha gente se detiene ahí creyendo que algo va mal.
+
+Se añadió también qué hacer si falla: casi siempre es falta de conexión, porque la
+primera celda descarga el proyecto.
+
+A cambio, la descripción del notebook en el README del paquete se acortó: las
+instrucciones viven en el propio notebook, que es donde se leen.

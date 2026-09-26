@@ -15,6 +15,8 @@ PROYECTO_FINAL = [
 Especialización en Data Analytics para Marketing Digital · Fundación Universitaria de
 Popayán
 
+**Estudiante:** José David Losada Legarda · 76261004
+
 ---
 
 Este notebook cuenta el estudio completo, de la pregunta a las recomendaciones. Los
