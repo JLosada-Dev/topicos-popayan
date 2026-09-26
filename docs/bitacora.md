@@ -2281,3 +2281,41 @@ recibe sin contexto:
   contiene el texto de las reseñas.
 
 El paquete queda en **11,2 MB**.
+
+---
+
+## 2026-09-26 — El notebook consolidado, ejecutable en Colab de una pasada
+
+**El problema.** La versión Colab del consolidado pedía montar Drive o subir un zip.
+Las dos cosas exigen intervención, así que rompían el «ejecutar todas». Y con el paquete
+de entrega tampoco servía: los notebooks buscan diez archivos de `data/processed/` y el
+paquete lleva cinco con otros nombres.
+
+**La solución.** La primera celda **clona el repositorio**, que trae el código, los datos
+ya calculados y las figuras. El revisor pulsa el badge de Colab y ejecuta todo seguido.
+
+**No instala nada.** Se comprobó qué importa el notebook: solo `pandas`, `numpy` e
+`IPython`, que Colab ya trae. Sin `pip install` no hay reinicio del entorno, que es la
+otra cosa que suele romper el «ejecutar todas».
+
+Se conservan Drive y el zip como alternativas, por si el repositorio no estuviera
+disponible, pero se avisa de que ésas sí requieren intervención.
+
+El preámbulo vive en `scripts/preambulo_final_colab.py` y solo se aplica al consolidado;
+los cuatro por etapa conservan el genérico.
+
+### Verificación
+
+No bastaba con ejecutarlo en el proyecto, porque ahí la detección cae en la rama local.
+Se **clonó el repositorio de verdad** y se comprobó sobre el clon:
+
+- Trae `src/config.py`, los **diez archivos de datos** que el notebook lee y las cuatro
+  figuras. 53 MB.
+- El notebook se ejecutó **desde el clon**, entero y sin errores: 21 celdas de código,
+  todas con salida.
+
+### Limitación mientras el repositorio no esté publicado
+
+`git clone` fallará hasta que se haga el push. Hasta entonces el notebook cae en las
+alternativas, que piden intervención. En cuanto el repositorio sea público, el badge de
+Colab funciona de principio a fin.

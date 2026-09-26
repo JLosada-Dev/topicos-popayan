@@ -14,6 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src.config import RAIZ  # noqa: E402
 
 from scripts.notebook_final import PROYECTO_FINAL  # noqa: E402
+from scripts.preambulo_final_colab import PREAMBULO_FINAL_COLAB  # noqa: E402
 from scripts.notebooks_contenido import NOTEBOOKS, code, md  # noqa: E402
 
 TODOS = {"proyecto_final": PROYECTO_FINAL, **NOTEBOOKS}
@@ -182,7 +183,11 @@ def main() -> None:
         local = construir([titulo, *PREAMBULO_LOCAL, *resto], KERNEL_LOCAL)
         escribir(CARPETA_LOCAL / f"{nombre}.ipynb", local)
 
-        colab = construir([titulo, *preambulo_colab(nombre), *resto], KERNEL_COLAB)
+        # El consolidado lleva su propio preambulo: clona el repositorio para que
+        # funcione con «ejecutar todas», sin subir archivos ni montar Drive
+        cabecera = (PREAMBULO_FINAL_COLAB if nombre == "proyecto_final"
+                    else preambulo_colab(nombre))
+        colab = construir([titulo, *cabecera, *resto], KERNEL_COLAB)
         escribir(CARPETA_COLAB / f"{nombre}_colab.ipynb", colab)
 
         print(f"  {nombre}: {len(local['cells'])} celdas local · "
