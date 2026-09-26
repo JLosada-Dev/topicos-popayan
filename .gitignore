@@ -18,3 +18,6 @@ data/processed/embeddings_multilingual-e5-small*
 
 # Cache de pytest
 .pytest_cache/
+
+# Capturas intermedias de la presentación: el entregable es el PDF
+figuras/presentacion/

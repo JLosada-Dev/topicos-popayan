@@ -2240,3 +2240,21 @@ Para regenerar, en este orden:
 uv run python -m scripts.armar_entrega          # estructura y copias
 uv run python -m scripts.exportar_presentacion  # capturas y PDF
 ```
+
+---
+
+## 2026-09-25 — Las capturas sueltas salen del paquete
+
+`entrega/3_presentacion/capturas/` se elimina: las once imágenes duplicaban 2,9 MB de lo
+que el PDF ya contiene, y el entregable de esa carpeta es el PDF.
+
+**El script que las genera se conserva**, porque el PDF se construye a partir de ellas.
+Ahora las deja en `figuras/presentacion/`, fuera del paquete y sin versionar, con un
+aviso en la salida de que no van a la entrega.
+
+El README del paquete se actualizó: la carpeta se describe como el PDF con las once
+pantallas en 16:9, una por página.
+
+Verificado de nuevo tras el cambio: **once páginas, en orden y de tamaño uniforme**.
+
+El paquete pasa de 14,1 MB a **12,0 MB**.

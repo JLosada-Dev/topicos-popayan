@@ -6,8 +6,9 @@ de pantalla.
 
     uv run python -m scripts.exportar_presentacion
 
-Produce `entrega/3_presentacion/capturas/NN_nombre.png`, una por pantalla, y
-`entrega/3_presentacion/presentacion.pdf` con una pantalla por página.
+El entregable es el PDF, en `entrega/3_presentacion/`. Las imágenes sueltas son un
+paso intermedio y quedan en `figuras/presentacion/`, fuera del paquete y sin versionar:
+duplicarían casi 3 MB de lo que el PDF ya contiene.
 """
 
 import subprocess
@@ -26,8 +27,10 @@ PUERTO = 8596
 URL = f"http://localhost:{PUERTO}"
 
 DESTINO = RAIZ / "entrega" / "3_presentacion"
-CAPTURAS = DESTINO / "capturas"
 PDF = DESTINO / "presentacion.pdf"
+
+# Las capturas quedan fuera del paquete: son el insumo del PDF, no un entregable
+CAPTURAS = RAIZ / "figuras" / "presentacion"
 
 # La ventana va alta a propósito: con 900 px de alto el contenedor de las imágenes
 # recorta el mapa de calor. Cada pantalla se captura completa y después se compone
@@ -175,6 +178,7 @@ def main() -> None:
     from playwright.sync_api import sync_playwright
 
     CAPTURAS.mkdir(parents=True, exist_ok=True)
+    DESTINO.mkdir(parents=True, exist_ok=True)
     for viejo in CAPTURAS.glob("*.png"):
         viejo.unlink()
 
@@ -205,8 +209,9 @@ def main() -> None:
         servidor.wait(timeout=10)
 
     _a_pdf(imagenes)
-    print(f"\n  {PDF.name:<32} {PDF.stat().st_size // 1024:>5} KB "
-          f"({len(imagenes)} páginas)")
+    print(f"\n  imágenes en {CAPTURAS.relative_to(RAIZ)}/ (no van al paquete)")
+    print(f"  {PDF.relative_to(RAIZ)}".ljust(40)
+          + f"{PDF.stat().st_size // 1024:>5} KB ({len(imagenes)} páginas)")
 
 
 if __name__ == "__main__":

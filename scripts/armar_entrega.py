@@ -37,8 +37,8 @@ Digital, FUP.
     metodológico, en formato HTML.
 - **`2_dataset/`** — los cinco archivos de datos, el diccionario que describe cada
   columna y el manifiesto con los hashes SHA-256 para verificar su integridad.
-- **`3_presentacion/`** — `presentacion.pdf`, once pantallas en 16:9 para proyectar, y
-  las mismas en `capturas/` como imágenes sueltas.
+- **`3_presentacion/`** — `presentacion.pdf`, las once pantallas de la sustentación en
+  formato 16:9, una por página, listas para proyectar o imprimir.
 
 ## Los HTML no necesitan nada
 
@@ -88,7 +88,7 @@ def main() -> None:
         if archivo.is_file():
             copiar(archivo, DESTINO / "2_dataset" / archivo.name)
 
-    (DESTINO / "3_presentacion" / "capturas").mkdir(parents=True, exist_ok=True)
+    (DESTINO / "3_presentacion").mkdir(parents=True, exist_ok=True)
 
     for carpeta in sorted(p for p in DESTINO.rglob("*") if p.is_dir()):
         archivos = [f for f in carpeta.iterdir() if f.is_file()]
