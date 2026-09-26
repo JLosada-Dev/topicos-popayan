@@ -22,27 +22,8 @@ from src.figuras import (  # noqa: E402
     preparar,
     titular,
 )
+from src.etiquetas import legible as bonito  # noqa: E402
 from src.topicos import ATIPICO  # noqa: E402
-
-# Las columnas van sin tildes por convención del proyecto; las figuras del informe
-# sí las llevan, porque las lee una persona
-NOMBRE_TEMA = {
-    "recomendacion": "recomendación",
-    "ocasion de consumo": "ocasión de consumo",
-    "intencion de volver": "intención de volver",
-    "satisfaccion": "satisfacción",
-    "presentacion y variedad": "presentación y variedad",
-    "cocina por origen": "cocina por origen",
-    "carta y menu": "carta y menú",
-    "cafe": "café",
-    "asiatica": "asiática",
-    "centro historico": "centro histórico",
-}
-
-
-def bonito(nombre: str) -> str:
-    return NOMBRE_TEMA.get(nombre, nombre)
-
 
 NOMBRE_TIPO = {
     "atributo_esquema": "Atributo del esquema\na priori",

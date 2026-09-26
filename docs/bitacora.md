@@ -1846,3 +1846,70 @@ El HTML se sigue generando solo desde los locales, que son idénticos salvo el p
 | Quien quiera ejecutarlo sin instalar | `notebooks/colab/proyecto_final_colab.ipynb` |
 
 Los cuatro por etapa son anexo en los tres casos.
+
+---
+
+## 2026-09-25 — Gráfico de temas en el dashboard
+
+**Qué se hizo.** En la sección Temas, un gráfico de barras horizontales que acompaña a la
+tabla sin reemplazarla: los 14 temas por calificación media, con línea de referencia en
+la media del corpus y el número de fragmentos junto a cada barra.
+
+### Encaja ahí, y no duplica nada
+
+Se comprobó antes de implementarlo. La figura `02_temas_por_rating.png` **no se usa en
+ninguna sección del dashboard** —solo están la 04, la 01 y la 03—, así que el gráfico es
+aditivo. Y la secuencia tabla → gráfico → detalle es natural: el gráfico da la lectura
+visual de lo que la tabla dice en números.
+
+### Altair, no matplotlib
+
+**Altair viene con Streamlit**, así que no añade dependencias. Matplotlib está en el
+proyecto pero **no en `requirements.txt`**: usarlo habría roto el despliegue en Community
+Cloud. Se añadió una prueba en subproceso que verifica que el dashboard no lo importe, y
+así no se puede colar sin que salte.
+
+### La paleta se extrajo a `src/paleta.py`
+
+Los colores vivían en `src/figuras.py`, que importa matplotlib. Ahora están en un módulo
+sin dependencias que importan tanto las figuras del informe como el dashboard, de modo
+que **el mismo tipo de tema tiene el mismo color en el papel y en pantalla** sin duplicar
+valores ni arrastrar matplotlib.
+
+### Una tensión en los requisitos, y cómo se resolvió
+
+«Ordenados por calificación media» y «agrupados por tipo en tres bloques separados» no
+son del todo compatibles: al facetar por tipo no queda un ranking único de 14, sino tres
+rankings. Se optó por **ordenar dentro de cada bloque**, que es lo que pedía la
+especificación más concreta. El filtro permite además aislar un tipo.
+
+El coste: no se lee de un vistazo cuál es el peor de los 14. Como los tipos tienen
+calificaciones medias distintas, el conjunto se aproxima igualmente a un orden global.
+
+### Nombres legibles, centralizados
+
+El gráfico dejó a la vista que los temas se mostraban sin tildes —«ocasion de consumo»,
+«satisfaccion»—, porque las columnas van sin tildes por convención del proyecto. El mapa
+de nombres legibles estaba escrito dentro de `scripts/generar_figuras.py`; se movió a
+`src/etiquetas.py`, su sitio natural, y ahora lo usan las figuras, la tabla del dashboard
+y el gráfico. Se corrigió también la tabla, porque queda junto al gráfico y la
+inconsistencia habría sido evidente.
+
+### La línea de cierre
+
+Bajo el gráfico se señala que **ningún atributo emergente con tópico propio resulta
+negativo**, que no significa que no haya quejas sobre atributos nuevos —inocuidad 1,62 y
+cobro 1,87 son de lo peor del corpus— sino que **no llegaron a formar tópico**. Remite a
+la **limitación 5** del notebook `03_evaluacion` y de esta bitácora.
+
+### Verificación
+
+Los cuatro estados del filtro —Todos y cada tipo— sin errores. La especificación del
+gráfico revisada campo a campo: tres facetas en orden, tres capas (barra, texto, línea),
+orden descendente por calificación dentro de cada bloque, referencia en 3,70 y las
+etiquetas numéricas. Las cinco secciones siguen funcionando, 79 pruebas pasan.
+
+Los notebooks no se tocaron, como se pidió.
+
+**Pendiente**: no se pudo revisar el gráfico renderizado en el navegador, porque esta
+sesión no tiene esa herramienta. La verificación es estructural.

@@ -10,6 +10,8 @@ import streamlit as st
 
 from app import datos
 from src.config import DIMENSIONES
+from src.etiquetas import legible
+from src.paleta import COLOR_POR_TIPO, ORDEN_TIPOS, REJILLA, TINTA_TENUE
 
 SEMILLA = 42
 N_EJEMPLOS = 5
@@ -142,7 +144,10 @@ def temas() -> None:
         "polaridad_dominante": "Polaridad",
     })
     vista["Tipo"] = vista["Tipo"].map(NOMBRE_TIPO)
+    vista["Tema"] = vista["Tema"].map(legible)
     st.dataframe(vista, hide_index=True, width="stretch")
+
+    _grafico_temas(tabla, marco)
 
     st.subheader("Ver un tema en detalle")
     elegido = st.selectbox(
@@ -321,6 +326,96 @@ def contraste() -> None:
         "vocabulario propio. **Comida es el caso opuesto**: se reparte en 38 tópicos y "
         "su tópico principal ni siquiera es de comida, sino de valoración global. Es la "
         "dimensión más grande y la menos específica: casi cualquier elogio la menciona."
+    )
+
+
+def _grafico_temas(tabla: pd.DataFrame, marco: pd.DataFrame) -> None:
+    """Los 14 temas por calificación, en tres bloques según su tipo.
+
+    Se usa Altair y no matplotlib porque Altair viene con Streamlit: matplotlib está en
+    el proyecto pero no en `requirements.txt`, y el dashboard tiene que poder
+    desplegarse en Community Cloud.
+    """
+    import altair as alt
+
+    media_corpus = float(marco["rating"].mean())
+
+    st.subheader("Los temas, por calificación")
+    _nota(
+        "Cada barra es un tema; su largo es la calificación media de las reseñas donde "
+        "aparece. La línea punteada marca la media del corpus. Los tres bloques son los "
+        "tipos de tema, y dentro de cada uno van ordenados de mejor a peor calificados."
+    )
+
+    etiquetas = ["Todos", *[NOMBRE_TIPO[t].replace("\n", " ") for t in ORDEN_TIPOS]]
+    elegido = st.radio("Mostrar", etiquetas, horizontal=True, key="filtro_tipo_tema")
+
+    datos_grafico = tabla.copy()
+    if elegido != "Todos":
+        buscado = next(t for t in ORDEN_TIPOS if NOMBRE_TIPO[t].replace("\n", " ") == elegido)
+        datos_grafico = datos_grafico[datos_grafico["tipo"] == buscado]
+    datos_grafico = datos_grafico.assign(
+        tema=datos_grafico["tema"].map(legible),
+        bloque=datos_grafico["tipo"].map(lambda t: NOMBRE_TIPO[t].replace("\n", " ")),
+        etiqueta=datos_grafico["fragmentos"].map(lambda n: f"{n:,}".replace(",", ".")),
+    )
+
+    orden_bloques = [NOMBRE_TIPO[t].replace("\n", " ") for t in ORDEN_TIPOS
+                     if t in set(datos_grafico["tipo"])]
+    colores = alt.Scale(
+        domain=[NOMBRE_TIPO[t].replace("\n", " ") for t in ORDEN_TIPOS],
+        range=[COLOR_POR_TIPO[t] for t in ORDEN_TIPOS],
+    )
+
+    base = alt.Chart(datos_grafico).encode(
+        y=alt.Y("tema:N", sort="-x", title=None,
+                axis=alt.Axis(labelLimit=200, domain=False, ticks=False)),
+        x=alt.X("rating:Q", title="Calificación media (estrellas)",
+                scale=alt.Scale(domain=[1, 5.2]), axis=alt.Axis(grid=True, gridColor=REJILLA)),
+    )
+    barras = base.mark_bar(height=16, cornerRadiusEnd=4).encode(
+        color=alt.Color("bloque:N", scale=colores, legend=None),
+        tooltip=[
+            alt.Tooltip("tema:N", title="Tema"),
+            alt.Tooltip("bloque:N", title="Tipo"),
+            alt.Tooltip("rating:Q", title="Calificación", format=".2f"),
+            alt.Tooltip("fragmentos:Q", title="Fragmentos", format=","),
+            alt.Tooltip("pct_1_2_estrellas:Q", title="% de 1-2★", format=".1f"),
+        ],
+    )
+    numeros = base.mark_text(align="left", dx=6, fontSize=11, color=TINTA_TENUE).encode(
+        text="etiqueta:N"
+    )
+    referencia = (
+        alt.Chart(pd.DataFrame({"x": [media_corpus]}))
+        .mark_rule(strokeDash=[4, 3], color=TINTA_TENUE, strokeWidth=1.5)
+        .encode(x="x:Q")
+    )
+
+    grafico = (
+        (barras + numeros + referencia)
+        .properties(width="container", height=alt.Step(26))
+        .facet(row=alt.Row("bloque:N", title=None, sort=orden_bloques,
+                           header=alt.Header(labelAnchor="start", labelFontWeight="bold",
+                                             labelFontSize=12, labelPadding=4)))
+        .resolve_scale(y="independent")
+    )
+    st.altair_chart(grafico, width="stretch")
+    st.caption(f"El número junto a cada barra es la cantidad de fragmentos. "
+               f"Línea punteada: media del corpus, {media_corpus:.2f} estrellas.")
+
+    st.markdown(
+        "**Ningún atributo emergente con tópico propio resulta negativo.** Los cuatro "
+        "—ocasión de consumo, referente en la ciudad, infraestructura y espacio, medios "
+        "de pago— quedan en la media o por encima. No significa que no haya quejas sobre "
+        "atributos nuevos: inocuidad (1,62) y cobro (1,87) son de lo peor calificado del "
+        "corpus, pero **no llegaron a formar tópico**, así que no aparecen en este "
+        "gráfico. Es un sesgo del método, no del corpus."
+    )
+    st.caption(
+        "Se detalla en la **limitación 5** del notebook `03_evaluacion` y de "
+        "`docs/bitacora.md`: el umbral de agrupamiento sesga qué atributos emergentes "
+        "llegan a verse, y el sesgo tiene signo."
     )
 
 

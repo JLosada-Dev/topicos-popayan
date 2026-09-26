@@ -80,3 +80,40 @@ def test_las_figuras_que_muestra_existen():
     for nombre in ("04_embudo_corpus.png", "01_distribucion_por_tipo.png",
                    "03_mapa_topico_dimension.png"):
         assert datos.figura(nombre).exists(), nombre
+
+
+def test_el_dashboard_no_carga_matplotlib(tmp_path):
+    """Matplotlib no está en `requirements.txt`: si el dashboard lo importara, el
+    despliegue en Streamlit Community Cloud fallaría. Va en un subproceso porque otra
+    prueba pudo haberlo cargado ya."""
+    import subprocess
+    import sys
+    from pathlib import Path as Ruta
+
+    guion = tmp_path / "comprobar.py"
+    guion.write_text(
+        "import sys\n"
+        f"sys.path.insert(0, {str(Ruta.cwd())!r})\n"
+        "import streamlit as st\n"
+        "st.radio = lambda l, o, **k: list(o)[0]\n"
+        "st.selectbox = lambda l, o, **k: list(o)[0]\n"
+        "st.text_input = lambda l, **k: ''\n"
+        "st.slider = lambda l, a, b, c, **k: 5\n"
+        "st.button = lambda *a, **k: False\n"
+        "from app import secciones\n"
+        "for f in (secciones.resumen, secciones.temas, secciones.topicos,\n"
+        "          secciones.contraste, secciones.explorador):\n"
+        "    f()\n"
+        "print('MATPLOTLIB:' + str('matplotlib' in sys.modules))\n",
+        encoding="utf-8",
+    )
+    salida = subprocess.run([sys.executable, str(guion)], capture_output=True, text=True)
+    linea = next(l for l in salida.stdout.splitlines() if l.startswith("MATPLOTLIB:"))
+    assert linea == "MATPLOTLIB:False", "el dashboard importó matplotlib"
+
+
+def test_nombres_de_tema_legibles():
+    from src.etiquetas import legible
+
+    assert legible("ocasion de consumo") == "ocasión de consumo"
+    assert legible("comida") == "comida"          # sin cambio cuando no hace falta

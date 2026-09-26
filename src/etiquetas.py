@@ -66,6 +66,26 @@ ASIGNACION = {
 }
 
 
+# Las columnas van sin tildes por convención del proyecto; lo que lee una persona
+# —figuras y dashboard— sí las lleva
+NOMBRE_LEGIBLE = {
+    "recomendacion": "recomendación",
+    "ocasion de consumo": "ocasión de consumo",
+    "intencion de volver": "intención de volver",
+    "satisfaccion": "satisfacción",
+    "presentacion y variedad": "presentación y variedad",
+    "carta y menu": "carta y menú",
+    "cafe": "café",
+    "asiatica": "asiática",
+    "centro historico": "centro histórico",
+}
+
+
+def legible(nombre: str) -> str:
+    """Nombre de tema o subtema tal como debe leerse en pantalla o en una figura."""
+    return NOMBRE_LEGIBLE.get(nombre, nombre)
+
+
 def polaridad(rating_medio: float) -> str:
     if rating_medio >= UMBRAL_POSITIVA:
         return POSITIVA

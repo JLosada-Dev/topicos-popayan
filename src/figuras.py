@@ -20,23 +20,18 @@ from src.config import FIGURAS
 DPI = 300
 FORMATOS = ("png", "pdf")
 
-# Rampa secuencial azul de la guía de visualización. El orden es de claro a oscuro:
-# en escala de grises se traduce en una progresión monótona de luminosidad.
-RAMPA = {
-    100: "#cde2fb", 150: "#b7d3f6", 200: "#9ec5f4", 250: "#86b6ef",
-    300: "#6da7ec", 350: "#5598e7", 400: "#3987e5", 450: "#2a78d6",
-    500: "#256abf", 550: "#1c5cab", 600: "#184f95", 650: "#104281", 700: "#0d366b",
-}
-
-SUPERFICIE = "#fcfcfb"
-TINTA = "#0b0b0b"
-TINTA_SECUNDARIA = "#52514e"
-TINTA_TENUE = "#8a8984"
-REJILLA = "#e3e2de"
-
-# Pasos separados a propósito: en gris quedan a ~30 puntos de luminosidad entre sí
-PASOS_CATEGORIA = (RAMPA[650], RAMPA[400], RAMPA[200])
-TRAMAS = ("", "///", "...")
+# La paleta vive en `src/paleta.py`, que no importa matplotlib, para que el dashboard
+# pueda compartirla sin arrastrar esta dependencia
+from src.paleta import (  # noqa: E402
+    PASOS_CATEGORIA,
+    RAMPA,
+    REJILLA,
+    SUPERFICIE,
+    TINTA,
+    TINTA_SECUNDARIA,
+    TINTA_TENUE,
+    TRAMAS,
+)
 
 
 def preparar() -> None:
