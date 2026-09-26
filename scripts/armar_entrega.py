@@ -52,7 +52,9 @@ crítico.
 
 - **`1_notebook/`** — `proyecto_final.ipynb`, el estudio completo: problema, objetivo,
   pregunta analítica, datos, técnicas, resultados, insights y recomendaciones. Ya viene
-  ejecutado, con todas sus salidas y figuras.
+  ejecutado, con todas sus salidas y figuras. **Súbelo a Google Colab y pulsa
+  «Ejecutar todas»**: la primera celda descarga el proyecto sola, no hay que instalar
+  nada ni subir archivos.
   - **`html/`** — el mismo estudio más los cuatro notebooks por etapa, que son el anexo
     metodológico, en formato HTML.
 - **`2_dataset/`** — cinco archivos de datos, el diccionario que describe cada columna y
@@ -66,7 +68,10 @@ Los archivos de `1_notebook/html/` se abren **con doble clic en cualquier navega
 hace falta instalar Python, ni Jupyter, ni tener conexión a internet. Las figuras van
 incrustadas dentro del propio archivo.
 
-El `.ipynb` es la versión ejecutable y requiere Jupyter o Google Colab.
+El `.ipynb` es la versión ejecutable. En **Google Colab** funciona sin preparativos: la
+primera celda clona el repositorio con el código y los datos, y el resto son lecturas de
+resultados ya calculados, así que corre en segundos. También funciona en un Jupyter
+local si tienes el proyecto.
 
 ## Sobre el corpus
 
@@ -108,7 +113,11 @@ def main() -> None:
 
     (DESTINO / "README.md").write_text(README, encoding="utf-8")
 
-    copiar(RAIZ / "notebooks" / f"{NOTEBOOK_PRINCIPAL}.ipynb",
+    # Va la versión de Colab, no la local: es la única que sirve a quien recibe el
+    # paquete sin tener el proyecto. En Colab clona el repositorio; en local detecta la
+    # carpeta. La versión local solo funciona si ya tienes el proyecto, en cuyo caso
+    # usarías la copia del repositorio.
+    copiar(RAIZ / "notebooks" / "colab" / f"{NOTEBOOK_PRINCIPAL}_colab.ipynb",
            DESTINO / "1_notebook" / f"{NOTEBOOK_PRINCIPAL}.ipynb")
     for nombre in EN_HTML:
         copiar(RAIZ / "docs" / "notebooks_html" / f"{nombre}.html",

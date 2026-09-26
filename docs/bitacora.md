@@ -2319,3 +2319,34 @@ Se **clonó el repositorio de verdad** y se comprobó sobre el clon:
 `git clone` fallará hasta que se haga el push. Hasta entonces el notebook cae en las
 alternativas, que piden intervención. En cuanto el repositorio sea público, el badge de
 Colab funciona de principio a fin.
+
+---
+
+## 2026-09-26 — El notebook del paquete es la versión ejecutable
+
+**El hueco.** El paquete llevaba la versión **local** de `proyecto_final.ipynb`, cuya
+primera celda hace `Path.cwd()` y busca `src/` junto al notebook. Quien recibe el
+paquete no tiene el proyecto, así que al subirlo a Colab —lo más probable que haga— la
+primera celda fallaba. La versión que sí resuelve el proyecto no estaba en el paquete.
+
+**La corrección.** Al paquete va ahora la versión ejecutable, que es estrictamente más
+capaz: si el proyecto está a mano lo usa, y si no, lo clona. La local solo sirve si ya
+tienes el repositorio, en cuyo caso usarías su propia copia.
+
+**Y el preámbulo se generalizó.** Antes solo clonaba dentro de Colab; fuera, se rendía.
+Ahora el orden es: carpeta actual, clon del repositorio, y solo en Colab y como último
+recurso, Drive o un zip. Clonar funciona igual en Colab que en un Jupyter local con git
+e internet, así que el «ejecutar todas» ya no depende del entorno.
+
+### Verificación
+
+No bastaba con ejecutarlo en el proyecto: ahí la detección encuentra la carpeta y no
+prueba nada. Se copió **el archivo del paquete a una carpeta vacía** y se ejecutó allí,
+que es lo que hará el revisor:
+
+- Clonó el repositorio solo: «proyecto clonado del repositorio».
+- Encontró los diez archivos de datos y las cuatro figuras.
+- **21 celdas, todas con salida, cero errores.**
+
+Una versión anterior de esta prueba falló con «No se encontró el proyecto desde el
+directorio actual», que es justo el fallo que el revisor habría visto.

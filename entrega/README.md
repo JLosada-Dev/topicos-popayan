@@ -29,7 +29,9 @@ crítico.
 
 - **`1_notebook/`** — `proyecto_final.ipynb`, el estudio completo: problema, objetivo,
   pregunta analítica, datos, técnicas, resultados, insights y recomendaciones. Ya viene
-  ejecutado, con todas sus salidas y figuras.
+  ejecutado, con todas sus salidas y figuras. **Súbelo a Google Colab y pulsa
+  «Ejecutar todas»**: la primera celda descarga el proyecto sola, no hay que instalar
+  nada ni subir archivos.
   - **`html/`** — el mismo estudio más los cuatro notebooks por etapa, que son el anexo
     metodológico, en formato HTML.
 - **`2_dataset/`** — cinco archivos de datos, el diccionario que describe cada columna y
@@ -43,7 +45,10 @@ Los archivos de `1_notebook/html/` se abren **con doble clic en cualquier navega
 hace falta instalar Python, ni Jupyter, ni tener conexión a internet. Las figuras van
 incrustadas dentro del propio archivo.
 
-El `.ipynb` es la versión ejecutable y requiere Jupyter o Google Colab.
+El `.ipynb` es la versión ejecutable. En **Google Colab** funciona sin preparativos: la
+primera celda clona el repositorio con el código y los datos, y el resto son lecturas de
+resultados ya calculados, así que corre en segundos. También funciona en un Jupyter
+local si tienes el proyecto.
 
 ## Sobre el corpus
 
