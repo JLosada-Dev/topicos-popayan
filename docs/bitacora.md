@@ -1753,3 +1753,44 @@ Nuevos: `notebooks/proyecto_final.ipynb` (+ Colab + HTML), `dataset/` con 7 arch
 `docs/.nojekyll`, y los scripts `construir_dataset`, `diccionario_datos`,
 `descripciones_columnas`, `notebook_final` e `inventario_publicacion`. README reescrito.
 77 pruebas pasan.
+
+---
+
+## 2026-09-25 — Decisiones previas a la publicación
+
+Repositorio público en `github.com/JLosada-Dev/topicos-popayan`. Tres decisiones, con lo
+que implicó cada una.
+
+**1. Se conservan las 33 menciones a personal.** El README lleva ahora una línea
+explícita: el corpus las conserva **tal como aparecen publicadas en Google Maps** y **el
+análisis no las emplea como variable** —no se extraen, no se cuentan, no entran en
+ninguna medición ni figura—. Se mantienen solo porque eliminarlas alteraría el texto que
+se segmenta y se vectoriza, y los resultados dejarían de ser reproducibles desde la
+fuente original.
+
+**2. El correo del autor en `pyproject.toml` se queda.** Es intencional.
+
+**3. Los embeddings de `multilingual-e5-small` quedan fuera: ahorran 9,0 MB.**
+
+Se verificó antes de confirmarlo. Los notebooks `02_topicos` y `proyecto_final` los
+mencionan, pero **solo en celdas de texto** que explican por qué se descartó el modelo:
+ninguna celda de código los carga. El dashboard usa exclusivamente MiniLM. Las únicas
+referencias en código son `src/embeddings.py`, que solo declara el nombre del modelo, y
+`scripts/experimento_topicos.py`, que los regenera en cinco segundos si se quiere repetir
+la comparación.
+
+Ya estaban en `.gitignore` desde que se hicieron los primeros commits, así que no hubo
+que sacarlos del historial. El README explica por qué no viajan.
+
+**Badges de Colab**: el marcador `USUARIO` se reemplazó por `JLosada-Dev` en los cinco, y
+se quitó la advertencia que pedía hacerlo.
+
+### Lo que se publicaría
+
+121 archivos, **24,69 MB**. Fuera quedan 1.447 MB, casi todo el entorno virtual, más los
+9,0 MB de los embeddings descartados.
+
+Comprobaciones: sin rutas personales, sin credenciales, un solo correo —el del autor, a
+propósito—.
+
+**El push queda preparado pero no ejecutado**, a la espera de revisar el commit.

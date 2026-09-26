@@ -52,11 +52,11 @@ De 8.451 reseñas quedan 2.430 aptas en español, que al segmentarse por cláusu
 
 | Notebook | Contenido | Colab |
 |---|---|---|
-| **`proyecto_final`** | **El estudio completo**: problema, objetivo, pregunta, datos, técnicas, resultados, insights y recomendaciones | [![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/USUARIO/topicos-popayan/blob/main/notebooks/colab/proyecto_final_colab.ipynb) |
-| `00_preparacion` | Del corpus a los fragmentos, con la validación de las etiquetas | [![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/USUARIO/topicos-popayan/blob/main/notebooks/colab/00_preparacion_colab.ipynb) |
-| `01_caracterizacion` | **Objetivo 1**: composición, calidad y distribuciones | [![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/USUARIO/topicos-popayan/blob/main/notebooks/colab/01_caracterizacion_colab.ipynb) |
-| `02_topicos` | **Objetivo 2**: embeddings, BERTopic y sensibilidad | [![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/USUARIO/topicos-popayan/blob/main/notebooks/colab/02_topicos_colab.ipynb) |
-| `03_evaluacion` | **Objetivo 3**: coherencia, AMI y temas transversales | [![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/USUARIO/topicos-popayan/blob/main/notebooks/colab/03_evaluacion_colab.ipynb) |
+| **`proyecto_final`** | **El estudio completo**: problema, objetivo, pregunta, datos, técnicas, resultados, insights y recomendaciones | [![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/JLosada-Dev/topicos-popayan/blob/main/notebooks/colab/proyecto_final_colab.ipynb) |
+| `00_preparacion` | Del corpus a los fragmentos, con la validación de las etiquetas | [![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/JLosada-Dev/topicos-popayan/blob/main/notebooks/colab/00_preparacion_colab.ipynb) |
+| `01_caracterizacion` | **Objetivo 1**: composición, calidad y distribuciones | [![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/JLosada-Dev/topicos-popayan/blob/main/notebooks/colab/01_caracterizacion_colab.ipynb) |
+| `02_topicos` | **Objetivo 2**: embeddings, BERTopic y sensibilidad | [![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/JLosada-Dev/topicos-popayan/blob/main/notebooks/colab/02_topicos_colab.ipynb) |
+| `03_evaluacion` | **Objetivo 3**: coherencia, AMI y temas transversales | [![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/JLosada-Dev/topicos-popayan/blob/main/notebooks/colab/03_evaluacion_colab.ipynb) |
 
 Los cuatro por etapa quedan como **anexo** del consolidado.
 
@@ -66,9 +66,6 @@ Los cuatro por etapa quedan como **anexo** del consolidado.
    renderiza directamente.
 2. `docs/notebooks_html/` tiene la versión HTML autocontenida, sin referencias externas.
 3. Los badges de arriba los abren en Colab.
-
-> Los enlaces de Colab llevan `USUARIO` como marcador: hay que reemplazarlo por el
-> usuario de GitHub cuando se publique el repositorio.
 
 ---
 
@@ -108,6 +105,11 @@ tests/        77 pruebas con pytest
 
 La regla: **`src/` es lógica, `scripts/` la ejecuta y guarda el resultado, los notebooks
 y el dashboard solo leen lo guardado.** Por eso todo corre en segundos.
+
+No viajan en el repositorio los embeddings del modelo `multilingual-e5-small`, que se
+probó y se descartó: son 9 MB que ningún notebook ni el dashboard cargan —solo se
+mencionan en el texto que explica por qué se descartó—. Se regeneran en cinco segundos
+con `scripts/experimento_topicos.py` si se quiere repetir la comparación.
 
 ---
 
@@ -169,10 +171,14 @@ número de reseñas que ha escrito cada persona, que no permite reidentificarla.
 anonimización viene de origen y se verificó en este trabajo.
 
 Lo que sí aparece es lo que ya es público en la plataforma: el **texto de la reseña**, el
-**nombre del establecimiento** y su ficha comercial. En 33 de las 8.451 reseñas se
-menciona a personal del local por su nombre de pila o su apodo, tal como lo escribió
-quien reseñó; son menciones que ya están publicadas en Google Maps y se conservan porque
-eliminarlas alteraría el texto que se analiza.
+**nombre del establecimiento** y su ficha comercial.
+
+**Sobre las menciones a personal.** En 33 de las 8.451 reseñas quien escribió nombra a
+alguien del local por su nombre de pila o su apodo. **El corpus las conserva tal como
+aparecen publicadas en Google Maps, y el análisis no las emplea como variable**: no se
+extraen, no se cuentan, no entran en ninguna medición ni en ninguna figura. Se mantienen
+únicamente porque eliminarlas alteraría el texto que se segmenta y se vectoriza, y con
+ello los resultados dejarían de ser reproducibles a partir de la fuente original.
 
 Dentro del pipeline, **los nombres de establecimiento se reemplazan por el marcador
 `[LOCAL]`** antes de generar los embeddings, para que el modelo agrupe por lo que se dice
