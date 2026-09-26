@@ -2172,3 +2172,61 @@ Los tres cambios revisados con el script, sobre la página renderizada. La propo
 las barras se comprobó midiendo píxeles, no a ojo. Al reescribir la función del gráfico
 se perdió el bloque de cierre —«Ninguno resulta negativo»— y se repuso, lo que la
 revisión visual detectó. 84 pruebas pasan, cero errores de consola.
+
+---
+
+## 2026-09-25 — Paquete de entrega y presentación exportada
+
+### `entrega/`
+
+Estructura para subir a Classroom, con el informe aparte. Todo se **copia**, nunca se
+mueve: el proyecto sigue funcionando igual. `scripts/armar_entrega.py` la regenera
+entera en cada ejecución, así que no puede quedar desincronizada.
+
+### La presentación, como PNG y como PDF
+
+`scripts/exportar_presentacion.py` recorre las once pantallas con Playwright, oculta la
+barra lateral y los controles de navegación, y fotografía **solo el área de contenido**.
+Cada captura sale a 3.200 px de ancho —factor de escala 2— y el PDF sale en 16 × 9
+pulgadas, apto para proyectar y para imprimir a 200 ppp.
+
+**Cuatro problemas que solo aparecieron al mirar el resultado:**
+
+1. **El mapa de calor salía cortado**, sin la fila T14. Con una ventana de 900 px de alto
+   el contenedor de la imagen la recorta. Se subió la ventana a 2.000 px.
+2. **Desapareció el bloque de demostración de la pantalla 7.** El código ocultaba el
+   hermano anterior a la fila de navegación fuera lo que fuese; ahora solo lo oculta si
+   de verdad es un separador.
+3. **Las páginas tenían alturas distintas**, de 1.504 a 2.830 px, así que al proyectar
+   cada pantalla habría salido a una escala diferente. Ahora cada una se compone sobre
+   un lienzo 16:9 uniforme, centrada y sin deformarse.
+4. **Sobraba blanco al final de cada captura**, porque Streamlit deja el contenedor con
+   la altura de la ventana. Al encajarlo en 16:9 el contenido quedaba muy pequeño. Se
+   recorta la franja vacía antes de componer.
+
+### Verificación del PDF
+
+Se renderizó de vuelta con `pdftoppm` y se comparó cada página con su captura de origen,
+aplicándole la misma transformación:
+
+- **Once páginas**, todas de 1.152 × 648 pt: 16:9 exacto.
+- **Orden correcto**: cada página correlaciona entre 0,994 y 0,999 con la suya, y además
+  se parece más a la suya que a cualquiera de las otras diez. El orden está comprobado,
+  no supuesto.
+- Gráficos completos, sin barra lateral ni controles de navegación.
+
+Una primera versión del chequeo dio orden incorrecto: comparaba las páginas del PDF
+—recortadas y encajadas— contra las capturas sin transformar. El fallo era de la
+comprobación, no del PDF.
+
+### `entrega/` no se versiona
+
+Se añadió al `.gitignore`. Es **derivada al cien por cien** de archivos que ya están en
+el repositorio, con sus hashes en `dataset/manifiesto.csv`. Versionarla duplicaría 7 MB
+sin aportar información y se desincronizaría en cuanto cambiara cualquier fuente. Se
+regenera con dos órdenes, en este orden:
+
+```bash
+uv run python -m scripts.armar_entrega          # estructura y copias
+uv run python -m scripts.exportar_presentacion  # capturas y PDF
+```

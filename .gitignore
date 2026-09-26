@@ -18,3 +18,7 @@ data/processed/embeddings_multilingual-e5-small*
 
 # Cache de pytest
 .pytest_cache/
+
+# Paquete de entrega: se regenera con `uv run python -m scripts.armar_entrega`
+# y `uv run python -m scripts.exportar_presentacion`
+entrega/
