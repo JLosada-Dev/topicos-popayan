@@ -2258,3 +2258,26 @@ pantallas en 16:9, una por página.
 Verificado de nuevo tras el cambio: **once páginas, en orden y de tamaño uniforme**.
 
 El paquete pasa de 14,1 MB a **12,0 MB**.
+
+---
+
+## 2026-09-25 — README del paquete, corregido y ampliado
+
+**Un error que se coló al commit anterior.** El README seguía anunciando una carpeta
+`capturas/` que ya no existe: se editó el texto dentro de `armar_entrega.py` pero no se
+volvió a ejecutar el script, así que el archivo en disco quedó obsoleto. Es el riesgo de
+tener un archivo generado y su generador: hay que correr el generador.
+
+Aprovechando la corrección, se le añadieron tres cosas que le faltaban para quien lo
+recibe sin contexto:
+
+- **De qué trata**, en dos párrafos: el corpus, la pregunta y el hallazgo. Un evaluador
+  que abre el paquete ya no tiene que deducirlo del árbol de carpetas.
+- **Por dónde empezar**, en tres pasos: el PDF para el recorrido, el HTML del estudio
+  para el desarrollo, y el diccionario de datos antes de abrir ningún CSV.
+- **Sobre el corpus**: que son reseñas públicas reutilizadas con fines académicos, que
+  las personas no son identificables y que los nombres de establecimiento se enmascaran.
+  Estaba en el README del repositorio pero no viajaba con el paquete, y el paquete
+  contiene el texto de las reseñas.
+
+El paquete queda en **11,2 MB**.
