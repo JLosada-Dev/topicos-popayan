@@ -1984,3 +1984,75 @@ esta sección.
 
 **Pendiente**: no se pudo revisar la presentación proyectada ni en el navegador, porque
 esta sesión no tiene esa herramienta. La verificación es estructural.
+
+---
+
+## 2026-09-25 — Revisión visual del dashboard con navegador
+
+**Qué se hizo.** Se añadió la capacidad de revisar el dashboard renderizado, que hasta
+ahora faltaba: la verificación era estructural y los defectos de maquetado quedaban para
+que los viera el autor.
+
+### Dos vías descartadas primero
+
+**Captura con el Chrome del sistema.** Falla: Streamlit se hidrata por websocket y
+`--virtual-time-budget` adelanta temporizadores pero no espera una conexión real. La
+captura sale con el esqueleto de carga.
+
+**`streamlit.testing.v1.AppTest`.** Sí funciona y viene con Streamlit, sin instalar nada:
+ejecuta la aplicación real, permite simular clics y detecta excepciones. Pero **no da
+píxeles**, que era justo lo que hacía falta.
+
+### La vía elegida
+
+`playwright` como dependencia de desarrollo, con Chromium headless (94 MB). No toca
+`requirements.txt` ni el despliegue en Cloud. `scripts/revisar_dashboard.py` levanta el
+dashboard en un puerto aparte, **espera a que desaparezca el esqueleto de carga**,
+recorre las once pantallas y las cinco secciones, captura cada una y recoge los errores
+de consola.
+
+### Cuatro defectos que solo se ven renderizando
+
+**1. La navegación no avanzaba.** El botón «Siguiente» cambiaba la pantalla y el selector
+de salto, que conserva su valor entre recargas, la devolvía inmediatamente a la anterior.
+Se peleaban por dos variables distintas. Corregido con una sola fuente de verdad: el
+selector escribe en la misma clave que leen los botones. **Las once pantallas mostraban
+la primera** y ninguna prueba estructural lo detectaba.
+
+**2. Los decimales salían con punto.** `0.41` y `3.70` donde en español va coma.
+
+**3. Las etiquetas del gráfico de atributos emergentes se cortaban.** Costó cuatro
+intentos, cada uno verificado en el navegador:
+
+- `autosize: fit/padding` sobre un gráfico por capas → `AttributeError`, la página entera
+  reventó con una traza en rojo.
+- El mismo `autosize` bien aplicado → las etiquetas desaparecieron del todo.
+- Ancho explícito → Streamlit lo ignoraba, porque sin el parámetro `width` aplica el del
+  contenedor; con `width="content"` sí lo respeta, pero seguían recortadas contra el
+  borde.
+- **Solución**: el nombre del tema va **dentro de la barra**, no en el eje. Vega calcula
+  el espacio del eje a partir del ancho disponible y con «infraestructura y espacio» no
+  llega. Dentro siempre cabe y además se lee mejor proyectado.
+
+Dos detalles más que aparecieron por el camino: `alt.value(0)` sobre una capa con `x`
+cuantitativo rompe Vega —hubo que construir las capas por separado y fijar el orden como
+lista en vez de `sort="-x"`—, y si una capa declara `axis=None` en `x`, Vega suprime el
+eje compartido de todas.
+
+**4. La pantalla 8 se reestructuró.** El gráfico pasó de una columna estrecha a ancho
+completo, debajo de la figura. En dos columnas no hay sitio para cuatro nombres largos
+más un eje de 1 a 5.
+
+### Estado
+
+84 pruebas pasan, dos nuevas sobre el estado compartido de la navegación. Cero errores de
+consola en las once pantallas y las cinco secciones. Las capturas van al directorio
+temporal, no al repositorio.
+
+A partir de ahora la revisión visual del dashboard **se puede hacer sin depender del
+autor**:
+
+```bash
+uv run python -m scripts.revisar_dashboard              # todo
+uv run python -m scripts.revisar_dashboard presentacion # solo la presentación
+```

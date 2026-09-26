@@ -143,6 +143,7 @@ uv run python -m scripts.construir_dataset      # dataset/ con sus hashes
 uv run python -m scripts.diccionario_datos      # dataset/diccionario_datos.md
 uv run python -m scripts.generar_notebooks      # los 10 notebooks
 uv run python -m scripts.exportar_notebooks     # los ejecuta y exporta a HTML
+uv run python -m scripts.revisar_dashboard      # captura el dashboard para revisarlo
 ```
 
 Los pasos 1 a 3 necesitan el proyecto previo `reputacion-popayan`, que no es público. Su

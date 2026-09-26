@@ -29,5 +29,6 @@ build-backend = "uv_build"
 dev = [
     "gensim>=4.4.0",
     "nbconvert>=7.17.1",
+    "playwright>=1.63.0",
     "pytest>=9.1.1",
 ]

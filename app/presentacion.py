@@ -12,7 +12,7 @@ import streamlit as st
 
 from app import datos
 from src.etiquetas import legible
-from src.paleta import COLOR_POR_TIPO, REJILLA, TINTA_TENUE
+from src.paleta import COLOR_POR_TIPO, REJILLA, TINTA, TINTA_TENUE
 
 CLAVE_PANTALLA = "pantalla"
 CONSULTA_DEMO = "comida en mal estado"
@@ -50,14 +50,31 @@ def _abrir(texto: str) -> None:
     st.markdown(f'{ESTILO}<div class="pres">{texto}</div>', unsafe_allow_html=True)
 
 
+def _coma(numero: float, decimales: int = 2) -> str:
+    """Decimal con coma, que es el separador del español."""
+    return f"{numero:.{decimales}f}".replace(".", ",")
+
+
 def _cifra(valor: str, etiqueta: str, pequena: bool = False) -> str:
     clase = "cifra-sm" if pequena else "cifra"
     return f'<div class="{clase}">{valor}</div><div class="pie">{etiqueta}</div>'
 
 
 # --------------------------------------------------------------- navegación
+#
+# Una sola fuente de verdad: el valor del selector de salto. Si los botones escribieran
+# en una variable aparte, el selector conservaría su valor anterior entre recargas y
+# devolvería la presentación a la pantalla de la que se acaba de salir.
+OPCIONES = tuple(f"{n + 1}. {t}" for n, t in enumerate(TITULOS))
+
+
+def _indice_actual() -> int:
+    elegida = st.session_state.setdefault(CLAVE_PANTALLA, OPCIONES[0])
+    return OPCIONES.index(elegida)
+
+
 def _ir_a(indice: int) -> None:
-    st.session_state[CLAVE_PANTALLA] = max(0, min(indice, len(TITULOS) - 1))
+    st.session_state[CLAVE_PANTALLA] = OPCIONES[max(0, min(indice, len(OPCIONES) - 1))]
 
 
 def _al_explorador() -> None:
@@ -73,16 +90,14 @@ def _navegacion(indice: int) -> None:
         on_click=_ir_a, args=(indice - 1,), key="pres_atras",
     )
     derecha.button(
-        "Siguiente ▶", width="stretch", disabled=indice == len(TITULOS) - 1,
+        "Siguiente ▶", width="stretch", disabled=indice == len(OPCIONES) - 1,
         on_click=_ir_a, args=(indice + 1,), key="pres_adelante",
     )
-    opciones = [f"{n + 1}. {t}" for n, t in enumerate(TITULOS)]
-    elegida = centro.selectbox(
-        "Ir a", opciones, index=indice, label_visibility="collapsed", key="pres_salto",
+    # El selector escribe directamente en CLAVE_PANTALLA, que es la misma variable que
+    # leen los botones
+    centro.selectbox(
+        "Ir a", OPCIONES, label_visibility="collapsed", key=CLAVE_PANTALLA,
     )
-    if opciones.index(elegida) != indice:
-        _ir_a(opciones.index(elegida))
-        st.rerun()
 
 
 # ---------------------------------------------------------------- pantallas
@@ -197,7 +212,7 @@ def _p7_resultados() -> None:
     with izquierda:
         _abrir(f"""
 <h2>Acuerdo con el esquema tradicional</h2>
-{_cifra(f"{ami['ami']:.2f}", "AMI · la línea base del azar es 0,00")}
+{_cifra(_coma(ami["ami"]), "AMI · la línea base del azar es 0,00")}
 <p class="destacado" style="margin-top:1.4rem">Parcial, no equivalencia.</p>
 <p>Comparten estructura real, pero <strong>los temas emergentes no son otra forma de
 nombrar las seis dimensiones</strong>.</p>
@@ -223,17 +238,22 @@ como un dominio entero que el modelo descompone en dieciséis tópicos.</p>
 
 
 def _p8_emergentes(temas: pd.DataFrame, marco: pd.DataFrame) -> None:
+    """La figura arriba y el gráfico a ancho completo abajo.
+
+    En dos columnas, los nombres de tema —«infraestructura y espacio»— no caben junto a
+    un eje de 1 a 5 y quedan cortados por las barras.
+    """
     _abrir("<h1>Atributos emergentes</h1>")
-    izquierda, derecha = st.columns([2, 3])
+    izquierda, derecha = st.columns([3, 2])
     with izquierda:
         st.image(str(datos.figura("01_distribucion_por_tipo.png")))
+    with derecha:
         _abrir("""
-<p class="destacado" style="margin-top:1rem">El 13 % del corpus habla de algo que el
-esquema no contempla.</p>
+<p class="destacado">El 13 % del corpus habla de algo que el esquema no contempla.</p>
 <p>Y un 20 % no describe nada: emite un veredicto. «Recomendado», «volvería».</p>
 """)
-    with derecha:
-        _grafico_emergentes(temas, marco)
+    st.divider()
+    _grafico_emergentes(temas, marco)
 
 
 def _grafico_emergentes(temas: pd.DataFrame, marco: pd.DataFrame) -> None:
@@ -245,30 +265,46 @@ def _grafico_emergentes(temas: pd.DataFrame, marco: pd.DataFrame) -> None:
         tema=lambda d: d["tema"].map(legible),
         etiqueta=lambda d: d["fragmentos"].map(lambda n: f"{n:,}".replace(",", ".")),
     )
-    base = alt.Chart(sub).encode(
-        y=alt.Y("tema:N", sort="-x", title=None,
-                axis=alt.Axis(labelFontSize=17, domain=False, ticks=False, labelLimit=260)),
-        x=alt.X("rating:Q", title="Calificación media (estrellas)",
-                scale=alt.Scale(domain=[1, 5.2]),
-                axis=alt.Axis(grid=True, gridColor=REJILLA, labelFontSize=14,
-                              titleFontSize=15)),
-    )
-    grafico = (
-        base.mark_bar(height=42, cornerRadiusEnd=5,
-                      color=COLOR_POR_TIPO["atributo_nuevo"])
-        + base.mark_text(align="left", dx=8, fontSize=16, color=TINTA_TENUE).encode(
-            text="etiqueta:N")
-        + alt.Chart(pd.DataFrame({"x": [media]})).mark_rule(
-            strokeDash=[5, 4], color=TINTA_TENUE, strokeWidth=2).encode(x="x:Q")
-    ).properties(height=260)
-    st.altair_chart(grafico, width="stretch")
-    _abrir(f"""
-<p class="pie">El número es la cantidad de fragmentos. Línea punteada: media del corpus,
-{media:.2f} estrellas.</p>
-<p class="destacado" style="margin-top:.6rem">Ninguno resulta negativo.</p>
-<p>No es que no haya quejas sobre atributos nuevos: inocuidad (1,62) y cobro (1,87) son
-de lo peor del corpus, pero <strong>no llegaron a formar tópico</strong>.</p>
-""")
+    # El nombre del tema va DENTRO de la barra, no en el eje. Vega calcula el espacio
+    # del eje a partir del ancho disponible y con nombres largos —«infraestructura y
+    # espacio»— los recorta contra el borde del contenedor. Dentro de la barra siempre
+    # caben y además se leen mejor proyectados.
+    #
+    # El orden se fija como lista en vez de con `sort="-x"`, porque la capa del nombre
+    # no tiene codificación `x` de la que ordenar.
+    orden = sub.sort_values("rating", ascending=False)["tema"].tolist()
+    eje_y = alt.Y("tema:N", sort=orden, title=None, axis=None)
+    eje_x = alt.X("rating:Q", title="Calificación media (estrellas)",
+                  scale=alt.Scale(domain=[1, 5.2]),
+                  axis=alt.Axis(grid=True, gridColor=REJILLA, labelFontSize=14,
+                                titleFontSize=15))
+
+    barras = alt.Chart(sub).mark_bar(
+        height=48, cornerRadiusEnd=5, color=COLOR_POR_TIPO["atributo_nuevo"]
+    ).encode(y=eje_y, x=eje_x)
+    nombres = alt.Chart(sub.assign(inicio=1.0)).mark_text(
+        align="left", dx=14, fontSize=19, fontWeight=600, color=TINTA
+    ).encode(y=eje_y, x=alt.X("inicio:Q", scale=alt.Scale(domain=[1, 5.2])),
+             text="tema:N")
+    cuentas = alt.Chart(sub).mark_text(
+        align="left", dx=10, fontSize=17, color=TINTA_TENUE
+    ).encode(y=eje_y, x=eje_x, text="etiqueta:N")
+    referencia = alt.Chart(pd.DataFrame({"x": [media]})).mark_rule(
+        strokeDash=[5, 4], color=TINTA_TENUE, strokeWidth=2
+    ).encode(x=alt.X("x:Q", scale=alt.Scale(domain=[1, 5.2])))
+
+    grafico = (barras + nombres + cuentas + referencia).properties(width=880, height=300)
+    st.altair_chart(grafico, width="content")
+    izquierda, derecha = st.columns([2, 3])
+    izquierda.markdown(
+        f'{ESTILO}<div class="pres"><p class="destacado">Ninguno resulta negativo.</p>'
+        f'<p class="pie">El número es la cantidad de fragmentos. Línea punteada: media '
+        f'del corpus, {_coma(media)} estrellas.</p></div>', unsafe_allow_html=True)
+    derecha.markdown(
+        f'{ESTILO}<div class="pres"><p>No es que no haya quejas sobre atributos nuevos: '
+        f'inocuidad (1,62) y cobro (1,87) son de lo peor del corpus, pero '
+        f'<strong>no llegaron a formar tópico</strong>.</p></div>',
+        unsafe_allow_html=True)
 
 
 def _p9_insights(marco: pd.DataFrame) -> None:
@@ -337,7 +373,7 @@ una imagen más amable de la que sus clientes sostienen.</strong></p>
 
 # -------------------------------------------------------------------- entrada
 def presentacion() -> None:
-    indice = st.session_state.setdefault(CLAVE_PANTALLA, 0)
+    indice = _indice_actual()
     temas = datos.temas()
     marco = datos.fragmentos()
 

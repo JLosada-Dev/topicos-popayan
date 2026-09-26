@@ -133,7 +133,21 @@ def test_la_navegacion_no_se_sale_de_rango():
     st.session_state = {}
     for pedido, esperado in [(-5, 0), (0, 0), (10, 10), (99, 10)]:
         presentacion._ir_a(pedido)
-        assert st.session_state[presentacion.CLAVE_PANTALLA] == esperado
+        assert presentacion._indice_actual() == esperado
+
+
+def test_el_selector_y_los_botones_comparten_estado():
+    """Si no comparten variable, el selector conserva su valor y devuelve la
+    presentación a la pantalla de la que se acaba de salir."""
+    import streamlit as st
+
+    from app import presentacion
+
+    st.session_state = {}
+    presentacion._ir_a(3)
+    # Lo que guarda el estado es la misma opción que muestra el selector
+    assert st.session_state[presentacion.CLAVE_PANTALLA] in presentacion.OPCIONES
+    assert st.session_state[presentacion.CLAVE_PANTALLA].startswith("4.")
 
 
 def test_el_acceso_al_explorador_precarga_la_consulta():
