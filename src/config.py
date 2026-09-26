@@ -1,12 +1,20 @@
 """Rutas y constantes compartidas del proyecto."""
 
+import os
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
 
 # Proyecto previo sobre el mismo corpus (capitulo de libro): SOLO LECTURA.
 # Nunca escribir, mover ni borrar nada bajo esta ruta.
-ORIGEN = Path("/Users/noovou/dev/fup/reputacion-popayan")
+#
+# No es publico, asi que la ruta depende de cada maquina: se toma de la variable de
+# entorno REPUTACION_POPAYAN y, si no esta, del sitio donde suele clonarse. Solo hace
+# falta para regenerar el corpus desde cero; `dataset/` y `data/processed/` ya traen
+# todo lo que se necesita para reproducir el analisis.
+ORIGEN = Path(
+    os.environ.get("REPUTACION_POPAYAN", Path.home() / "dev" / "fup" / "reputacion-popayan")
+)
 
 CORPUS = ORIGEN / "data" / "raw" / "corpus_final.csv"
 MARCO_MUESTRAL = ORIGEN / "data" / "raw" / "marco_muestral_final.csv"

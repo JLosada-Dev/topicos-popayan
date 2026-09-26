@@ -367,14 +367,23 @@ def explorador() -> None:
         "Consulta", key="consulta", placeholder="Escribe aquí, o usa un ejemplo de arriba"
     )
 
+    semantico = busqueda.hay_embeddings()
+    opciones = [busqueda.TFIDF]
+    if semantico:
+        opciones += [busqueda.EMBEDDINGS, "Comparar los dos"]
+
     columnas = st.columns([3, 1])
-    metodo = columnas[0].radio(
-        "Método", [busqueda.TFIDF, busqueda.EMBEDDINGS, "Comparar los dos"],
-        horizontal=True,
-    )
+    metodo = columnas[0].radio("Método", opciones, horizontal=True)
     cuantos = columnas[1].slider("Resultados", 3, 15, 5)
 
-    st.caption(
+    if not semantico:
+        st.info(
+            "En este despliegue solo está disponible la búsqueda por **coincidencia de "
+            "palabras**. La búsqueda por significado necesita el modelo de embeddings, "
+            "que ocupa más memoria de la que hay aquí; funciona en la versión local."
+        )
+
+    nota_metodos = (
         "**La diferencia entre los dos métodos.** TF-IDF busca **coincidencia de "
         "palabras**: recupera fragmentos que usan los mismos términos que escribiste, y "
         "no reconoce sinónimos. Los embeddings buscan **significado**: un modelo sitúa "

@@ -27,7 +27,8 @@ from src.config import RAIZ  # noqa: E402
 ORIGEN = RAIZ / "notebooks"
 DESTINO_HTML = RAIZ / "docs" / "notebooks_html"
 
-NOTEBOOKS = ("00_preparacion", "01_caracterizacion", "02_topicos", "03_evaluacion")
+NOTEBOOKS = ("proyecto_final", "00_preparacion", "01_caracterizacion",
+             "02_topicos", "03_evaluacion")
 
 TIEMPO_MAXIMO = 600
 

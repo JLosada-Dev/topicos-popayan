@@ -13,7 +13,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from src.config import RAIZ  # noqa: E402
 
+from scripts.notebook_final import PROYECTO_FINAL  # noqa: E402
 from scripts.notebooks_contenido import NOTEBOOKS, code, md  # noqa: E402
+
+TODOS = {"proyecto_final": PROYECTO_FINAL, **NOTEBOOKS}
 
 CARPETA_LOCAL = RAIZ / "notebooks"
 CARPETA_COLAB = RAIZ / "notebooks" / "colab"
@@ -36,7 +39,7 @@ from pathlib import Path
 
 RAIZ = Path.cwd().parent if Path.cwd().name == "notebooks" else Path.cwd()
 sys.path.insert(0, str(RAIZ))
-print(f"raíz del proyecto: {RAIZ}")
+print(f"raíz del proyecto: {RAIZ.name}/  ·  datos: {(RAIZ / 'data' / 'processed').exists()}")
 """),
 ]
 
@@ -128,7 +131,7 @@ def resolver_raiz():
 
 RAIZ = resolver_raiz()
 sys.path.insert(0, str(RAIZ))
-print(f"raíz del proyecto: {RAIZ}")
+print(f"raíz del proyecto: {RAIZ.name}/")
 '''),
         code("""
 # El módulo de rutas deduce la raíz de su propia ubicación, así que ya apunta bien
@@ -173,7 +176,7 @@ def escribir(ruta: Path, cuaderno: dict) -> None:
 
 
 def main() -> None:
-    for nombre, cuerpo in NOTEBOOKS.items():
+    for nombre, cuerpo in TODOS.items():
         titulo, resto = cuerpo[0], cuerpo[1:]
 
         local = construir([titulo, *PREAMBULO_LOCAL, *resto], KERNEL_LOCAL)

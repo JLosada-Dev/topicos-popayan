@@ -1,209 +1,189 @@
-# topicos-popayan
+# Temas emergentes en las reseñas gastronómicas de Popayán
 
-Trabajo final de Text & Web Analytics (Especialización en Data Analytics para Marketing
-Digital, FUP). Identifica los temas emergentes en reseñas de Google Maps de
-establecimientos gastronómicos de Popayán mediante modelado de tópicos, y los contrasta
-con seis dimensiones definidas a priori: comida, servicio, precio, ambiente, tiempo de
-espera y patrimonio.
+**Trabajo final · Text & Web Analytics**
+Especialización en Data Analytics para Marketing Digital · Fundación Universitaria de Popayán
 
-**Resultado:** 5.913 fragmentos de 2.430 reseñas, 41 tópicos agrupados en 14 temas,
-AMI de 0,406 contra las dimensiones a priori. Las cifras y su justificación están en
-`docs/bitacora.md`.
+Modelado de tópicos sobre **5.913 fragmentos** de **2.430 reseñas** de Google Maps de
+establecimientos gastronómicos de Popayán, contrastado con las seis dimensiones con las
+que tradicionalmente se evalúa la experiencia gastronómica.
 
-## Entorno
+---
 
-El proyecto usa **uv exclusivamente**. Python 3.12.
+## El hallazgo
 
-```bash
-uv sync                    # instala dependencias desde uv.lock
-uv run pytest              # pruebas
-```
+> **El esquema tradicional de seis dimensiones captura la mayor parte de lo que dicen los
+> comensales, pero no todo.** El acuerdo entre los temas que emergen del texto y las
+> dimensiones a priori es **moderado, no total: AMI 0,41 sobre una línea base de cero**.
 
-Para los notebooks, registra el kernel del entorno una sola vez:
+Tres cosas que el esquema no ve:
 
-```bash
-uv run python -m ipykernel install --user --name topicos-popayan
-```
+- **Un 13 % del corpus habla de atributos que no están en las seis dimensiones**:
+  la ocasión de consumo, el lugar que ocupa el local en la ciudad, la infraestructura y
+  los medios de pago. Los dos últimos son invisibles para el diccionario en más del 75 %
+  de sus fragmentos.
+- **Un 20 % no describe nada: juzga.** «Recomendado», «volvería». Es un rasgo del género
+  discursivo de la reseña, y no hay atributo que contrastar.
+- **Lo que el método no agrupa es lo más crítico.** Los fragmentos sin asignar promedian
+  3,20 estrellas contra 3,70 del corpus, e inocuidad (1,62) y cobro (1,87) son lo peor
+  calificado del estudio.
 
-## Estructura
+Y un resultado accionable: **la espera es el único tema por debajo de tres estrellas**
+(1,88, con el 75,8 % de reseñas de 1-2), mientras que los dos atributos mejor valorados
+—ocasión de consumo (4,58) y referente en la ciudad (4,55)— son justamente emergentes.
 
-```
-src/          código reutilizable
-scripts/      scripts puntuales que producen los artefactos de data/processed/
-app/          dashboard de Streamlit
-notebooks/    notebooks locales
-  colab/      versiones equivalentes para Google Colab
-data/
-  external/   manifiesto de lo leído del proyecto original
-  processed/  fragmentos, embeddings, modelo, tablas de resultados
-figuras/      figuras del informe en PNG y PDF a 300 dpi
-docs/         bitácora, evidencia por tópico, decisiones metodológicas
-  notebooks_html/  los cuatro notebooks en HTML, con sus salidas, para anexar al informe
-tests/        pytest
-```
+---
 
-El corpus proviene de un proyecto previo, `reputacion-popayan`, que es **solo lectura**.
-Cada archivo leído de allí queda registrado en `data/external/manifiesto.csv` con su
-número de filas y su hash SHA-256.
+## Los datos, en una figura
 
-## Notebooks
+![Embudo del corpus](figuras/04_embudo_corpus.png)
 
-Cuatro, uno por etapa. Cada uno abre enunciando el objetivo específico que cubre y
-cierra con sus hallazgos.
+De 8.451 reseñas quedan 2.430 aptas en español, que al segmentarse por cláusula producen
+5.913 fragmentos. El 80,7 % de ellos se asigna a alguno de los 41 tópicos.
 
-| Notebook | Cubre |
-|---|---|
-| `00_preparacion` | Del corpus heredado a los fragmentos. Embudo y validación de las etiquetas por fragmento. |
-| `01_caracterizacion` | **Objetivo 1.** Composición, calidad, distribución por calificación, establecimiento y zona. |
-| `02_topicos` | **Objetivo 2.** Embeddings, BERTopic, los 41 tópicos, los 14 temas y el análisis de sensibilidad. |
-| `03_evaluacion` | **Objetivo 3.** Coherencia, tabla cruzada, AMI, relación con la calificación, temas transversales y limitaciones. |
+![Distribución por tipo de tema](figuras/01_distribucion_por_tipo.png)
 
-**Los notebooks no recalculan lo costoso.** Leen de `data/processed/` los resultados que
-producen los scripts, de modo que corren de arriba abajo en segundos. Si esa carpeta no
-existe, hay que generarla primero:
+![Temas por calificación](figuras/02_temas_por_rating.png)
 
-```bash
-uv run python -m scripts.inventario            # manifiesto de lo heredado
-uv run python -m scripts.construir_fragmentos  # fragmentos.csv
-uv run python -m scripts.entrenar_modelo       # modelo y asignaciones
-uv run python -m scripts.tabla_temas           # temas consolidados
-uv run python -m scripts.contraste_dimensiones # tabla cruzada, AMI y dispersión
-uv run python -m scripts.temas_baja_masa       # temas transversales
-uv run python -m scripts.persistir_analisis    # coherencia, cohesión, sensibilidad
-uv run python -m scripts.generar_figuras       # figuras/
-uv run python -m scripts.evidencia_topicos     # docs/evidencia_topicos.md
-uv run python -m scripts.construir_tfidf       # matriz TF-IDF del explorador
-```
+![Mapa de tópico por dimensión](figuras/03_mapa_topico_dimension.png)
 
-Los notebooks se generan desde una sola fuente, para que la versión local y la de Colab
-no puedan divergir:
+---
 
-```bash
-uv run python -m scripts.generar_notebooks
-```
+## Los notebooks
 
-### Notebooks ya ejecutados
+| Notebook | Contenido | Colab |
+|---|---|---|
+| **`proyecto_final`** | **El estudio completo**: problema, objetivo, pregunta, datos, técnicas, resultados, insights y recomendaciones | [![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/USUARIO/topicos-popayan/blob/main/notebooks/colab/proyecto_final_colab.ipynb) |
+| `00_preparacion` | Del corpus a los fragmentos, con la validación de las etiquetas | [![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/USUARIO/topicos-popayan/blob/main/notebooks/colab/00_preparacion_colab.ipynb) |
+| `01_caracterizacion` | **Objetivo 1**: composición, calidad y distribuciones | [![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/USUARIO/topicos-popayan/blob/main/notebooks/colab/01_caracterizacion_colab.ipynb) |
+| `02_topicos` | **Objetivo 2**: embeddings, BERTopic y sensibilidad | [![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/USUARIO/topicos-popayan/blob/main/notebooks/colab/02_topicos_colab.ipynb) |
+| `03_evaluacion` | **Objetivo 3**: coherencia, AMI y temas transversales | [![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/USUARIO/topicos-popayan/blob/main/notebooks/colab/03_evaluacion_colab.ipynb) |
 
-**Los `.ipynb` de `notebooks/` se versionan con sus salidas guardadas**, así que se
-leen en GitHub o en Jupyter sin ejecutarlos. Los de `notebooks/colab/` van sin salidas
-a propósito: están pensados para ejecutarse en Colab, y unas salidas producidas en local
-solo confundirían.
+Los cuatro por etapa quedan como **anexo** del consolidado.
 
-`docs/notebooks_html/` tiene además la versión HTML, para anexar al informe. Se abre con
-doble clic en cualquier navegador y **no requiere instalar nada, ejecutar nada ni tener
-conexión**: las figuras van incrustadas en el propio archivo y no hay ninguna referencia
-externa.
+**Para leerlos sin ejecutar nada** hay tres caminos:
 
-| Archivo | Tamaño |
-|---|---:|
-| `00_preparacion.html` | 322 KB |
-| `01_caracterizacion.html` | 518 KB |
-| `02_topicos.html` | 450 KB |
-| `03_evaluacion.html` | 1,0 MB |
+1. Los `.ipynb` de `notebooks/` están versionados **con sus salidas**, así que GitHub los
+   renderiza directamente.
+2. `docs/notebooks_html/` tiene la versión HTML autocontenida, sin referencias externas.
+3. Los badges de arriba los abren en Colab.
 
-Para regenerar ambos formatos después de cambiar un notebook o los datos:
+> Los enlaces de Colab llevan `USUARIO` como marcador: hay que reemplazarlo por el
+> usuario de GitHub cuando se publique el repositorio.
 
-```bash
-uv run python -m scripts.exportar_notebooks
-```
+---
 
-El script ejecuta cada notebook **una sola vez**: guarda las salidas en el `.ipynb` y
-genera el HTML a partir de ese archivo ya ejecutado, de modo que los dos formatos
-muestran siempre las mismas cifras. De paso quita las salidas de `stderr`, que son
-avisos del entorno y no resultados.
-
-> Ojo con el orden: `scripts/generar_notebooks.py` reescribe los notebooks **sin**
-> salidas. Si cambias su contenido, genera primero y ejecuta después.
-
-### Ejecutar en local
-
-Abre el notebook y selecciona el kernel **topicos-popayan (uv)**. La primera celda
-resuelve la raíz del proyecto, tanto si abres desde la raíz como desde `notebooks/`.
-
-### Ejecutar en Google Colab
-
-Las versiones de `notebooks/colab/` tienen el mismo contenido; solo cambian las dos
-primeras celdas. Necesitan que el proyecto viaje con su carpeta `data/processed/`,
-porque no recalculan nada.
-
-**Opción A, con Google Drive (recomendada).** Sube la carpeta del proyecto a tu Drive,
-en `MyDrive/topicos-popayan`, y sube el notebook a Colab. Al ejecutar la segunda celda,
-Colab pedirá autorización para montar Drive y el proyecto se detectará solo.
-
-Si lo guardaste en otra ruta, cambia esta línea de la segunda celda:
-
-```python
-CARPETA_EN_DRIVE = "MyDrive/topicos-popayan"
-```
-
-**Opción B, subiendo un zip.** Si no montas Drive o el proyecto no está allí, la celda
-ofrece un diálogo de subida. Comprime la carpeta del proyecto y súbela cuando lo pida:
-
-```bash
-zip -r topicos-popayan.zip src data/processed figuras -x '*__pycache__*'
-```
-
-El zip debe contener `src/` y `data/processed/` juntos; la celda verifica que así sea y
-falla con un mensaje claro si no.
-
-**Qué hace cada celda del preámbulo:**
-
-1. **Dependencias.** Instala con `pip` solo si detecta Colab. En local no hace nada,
-   porque el entorno de uv ya las tiene.
-2. **Acceso a los datos.** Intenta Drive, luego la subida manual, y si no está en Colab
-   usa la carpeta del repositorio. Deja `RAIZ` apuntando al proyecto y lo añade a
-   `sys.path`.
-3. **Comprobación.** Verifica que `data/processed/` tenga los archivos que el notebook
-   va a leer, y lo dice antes de que falle una celda más abajo.
-
-Los notebooks de Colab se pueden ejecutar también en local sin cambios: la detección de
-entorno cae en la rama local. Es como se verifican antes de publicarlos.
-
-## Dashboard
-
-Para presentar los resultados. Cuatro secciones: resumen, temas, tópicos y contraste con
-el diccionario.
+## El dashboard
 
 ```bash
 uv run streamlit run app/main.py
 ```
 
-Se abre en `http://localhost:8501`. **Solo lee de `data/processed/`**: no recalcula nada
-ni carga el modelo de BERTopic, así que arranca en segundos y no necesita GPU ni
-descargar modelos. Si falta algún archivo, lo dice al abrir en vez de fallar a media
-navegación.
+Se abre en `http://localhost:8501` y arranca en **1 segundo**: solo lee CSV, no recalcula
+nada ni carga el modelo.
 
 | Sección | Qué muestra |
 |---|---|
-| **Resumen** | El embudo del corpus, cuántos tópicos y temas salieron, el AMI y los fragmentos sin asignar, con las figuras del embudo y de distribución por tipo. |
-| **Temas** | Tabla ordenable de los 14 temas. Al elegir uno: sus tópicos, términos, calificación media, % de 1-2★ y fragmentos de ejemplo. |
-| **Tópicos** | Selector de tópico con sus 10 términos, tamaño, calificación, concentración por establecimiento, dimensión dominante y cinco fragmentos completos. |
-| **Contraste** | Mapa de calor tópico por dimensión, el AMI con su línea base por permutación, y en cuántos tópicos se reparte cada dimensión. |
-| **Explorador** | Buscador de fragmentos por consulta libre, con dos métodos comparables lado a lado. |
+| **Resumen** | El embudo, los indicadores clave y dos figuras |
+| **Temas** | Tabla ordenable de los 14 temas; al elegir uno, sus tópicos y ejemplos |
+| **Tópicos** | Los 10 términos de cada tópico, su concentración por local y 5 fragmentos |
+| **Contraste** | Mapa de calor, AMI con su línea base y dispersión por dimensión |
+| **Explorador** | Buscador libre, con coincidencia de palabras y con significado, comparables |
 
-Cada indicador lleva una línea que explica qué significa, para que se entienda sin
-conocer el detalle técnico.
+Cada indicador lleva una línea que lo explica sin jerga.
 
-### El explorador
+---
 
-Busca los fragmentos más parecidos a una consulta libre, con dos representaciones:
+## Cómo está organizado
 
-- **TF-IDF** compara palabras. La matriz está precalculada
-  (`scripts/construir_tfidf.py`); el panel solo vectoriza la consulta. Responde en
-  **3-30 ms** y no carga nada pesado.
-- **Embeddings** compara significado, reutilizando los ya calculados. El modelo se
-  carga **de forma diferida y cacheada**, solo si eliges ese método: la primera
-  búsqueda de la sesión tarda unos **10 s** y las siguientes **15-500 ms**. El arranque
-  del panel no se ve afectado.
+```
+dataset/      los 5 archivos de datos, con su diccionario y sus hashes
+src/          la lógica reutilizable
+scripts/      los scripts que producen data/processed/
+notebooks/    el consolidado, los cuatro por etapa y sus versiones Colab
+app/          el dashboard de Streamlit
+figuras/      las cuatro figuras en PNG y PDF a 300 dpi
+docs/         bitácora, decisiones, evidencia por tópico y notebooks en HTML
+tests/        77 pruebas con pytest
+```
 
-La opción «Comparar los dos» muestra ambos rankings lado a lado y cuenta cuántos
-resultados comparten, que es la forma más directa de ver en qué se diferencian.
+La regla: **`src/` es lógica, `scripts/` la ejecuta y guarda el resultado, los notebooks
+y el dashboard solo leen lo guardado.** Por eso todo corre en segundos.
+
+---
+
+## Orden de ejecución
+
+El repositorio ya trae `data/processed/` con todo calculado, así que **para leer el
+análisis no hace falta ejecutar nada**. Para regenerarlo desde cero:
+
+```bash
+uv sync                    # instala las dependencias desde uv.lock
+uv run pytest              # 77 pruebas
+
+uv run python -m scripts.inventario             # manifiesto de lo heredado
+uv run python -m scripts.construir_fragmentos   # el corpus de fragmentos
+uv run python -m scripts.entrenar_modelo        # BERTopic, congelado y guardado
+uv run python -m scripts.tabla_temas            # los 14 temas
+uv run python -m scripts.contraste_dimensiones  # tabla cruzada, AMI y dispersión
+uv run python -m scripts.temas_baja_masa        # los temas transversales
+uv run python -m scripts.persistir_analisis     # coherencia, cohesión y sensibilidad
+uv run python -m scripts.construir_tfidf        # la matriz del explorador
+uv run python -m scripts.generar_figuras        # figuras/
+uv run python -m scripts.evidencia_topicos      # docs/evidencia_topicos.md
+uv run python -m scripts.construir_dataset      # dataset/ con sus hashes
+uv run python -m scripts.diccionario_datos      # dataset/diccionario_datos.md
+uv run python -m scripts.generar_notebooks      # los 10 notebooks
+uv run python -m scripts.exportar_notebooks     # los ejecuta y exporta a HTML
+```
+
+Los pasos 1 a 3 necesitan el proyecto previo `reputacion-popayan`, que no es público. Su
+ruta se configura con la variable de entorno `REPUTACION_POPAYAN`. **Del paso 4 en
+adelante todo sale de `data/processed/`**, que sí viaja con el repositorio.
+
+> `generar_notebooks` reescribe los notebooks **sin** salidas. Si cambias su contenido:
+> generar primero, ejecutar después.
+
+El proyecto usa **uv exclusivamente**. Python 3.12.
+
+---
 
 ## Documentación
 
 | Archivo | Contenido |
 |---|---|
-| `docs/bitacora.md` | Cada decisión y resultado con fecha, motivo y cifras. |
-| `docs/decisiones_metodologicas.md` | Tabla para el informe: decisión, valor, alternativa y por qué se descartó. |
-| `docs/evidencia_topicos.md` | Los 41 tópicos con términos, cifras y cinco fragmentos cada uno. |
-| `CLAUDE.md` | Convenciones del proyecto y decisiones cerradas. |
+| `dataset/diccionario_datos.md` | Cada archivo, su unidad de análisis, sus columnas y su procedencia |
+| `docs/bitacora.md` | Trazabilidad completa, con fecha, motivo y cifras |
+| `docs/decisiones_metodologicas.md` | 15 decisiones con su alternativa y por qué se descartó |
+| `docs/evidencia_topicos.md` | Los 41 tópicos con cinco fragmentos cada uno |
+
+---
+
+## Sobre el corpus y su uso académico
+
+El corpus son **reseñas públicas de Google Maps**, recogidas para un estudio previo
+(`reputacion-popayan`) y reutilizadas aquí con fines exclusivamente académicos.
+
+**Las personas que escribieron las reseñas no son identificables.** El corpus no contiene
+nombre, identificador ni foto de autor: el único dato de autoría es `autor_n_resenas`, el
+número de reseñas que ha escrito cada persona, que no permite reidentificarla. Esa
+anonimización viene de origen y se verificó en este trabajo.
+
+Lo que sí aparece es lo que ya es público en la plataforma: el **texto de la reseña**, el
+**nombre del establecimiento** y su ficha comercial. En 33 de las 8.451 reseñas se
+menciona a personal del local por su nombre de pila o su apodo, tal como lo escribió
+quien reseñó; son menciones que ya están publicadas en Google Maps y se conservan porque
+eliminarlas alteraría el texto que se analiza.
+
+Dentro del pipeline, **los nombres de establecimiento se reemplazan por el marcador
+`[LOCAL]`** antes de generar los embeddings, para que el modelo agrupe por lo que se dice
+y no por de quién se habla.
+
+Si reutilizas este corpus, hazlo con el mismo propósito académico y cita tanto este
+trabajo como el estudio previo del que procede.
+
+---
+
+## Licencia
+
+Trabajo académico. El código se ofrece para fines educativos. El corpus procede de
+contenido público de terceros y se comparte solo con fines de investigación.

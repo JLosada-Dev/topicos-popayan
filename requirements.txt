@@ -1,0 +1,13 @@
+# Dependencias del dashboard para Streamlit Community Cloud.
+#
+# Es un subconjunto de pyproject.toml: solo lo que app/ necesita para arrancar.
+# NO incluye sentence-transformers, que arrastra torch (mas de 1 GB instalado) y no
+# cabe en la memoria de Community Cloud. Sin el, el explorador ofrece la busqueda por
+# coincidencia de palabras y lo indica en pantalla; la busqueda por significado sigue
+# funcionando en la version local, donde `uv sync` si lo instala.
+streamlit>=1.64.0
+pandas>=3.0.6
+numpy>=2.5.3
+scipy>=1.18.1
+scikit-learn>=1.9.1
+pyarrow>=25.0.1

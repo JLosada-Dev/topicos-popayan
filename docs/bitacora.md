@@ -1626,3 +1626,130 @@ confundiría más de lo que aporta.
 `scripts/generar_notebooks.py` reescribe los notebooks **sin** salidas, porque genera
 desde el contenido fuente. Si se cambia el contenido: generar primero, ejecutar después.
 Queda anotado en el README y en el docstring del script.
+
+---
+
+## 2026-09-25 — Notebook consolidado, dataset y preparación para publicar
+
+### 1. `proyecto_final.ipynb`
+
+Un notebook único que cuenta el estudio de corrido, siguiendo la cadena **problema →
+objetivo → pregunta analítica → datos → técnicas → resultados → insights →
+recomendaciones**, más limitaciones y anexos. 45 celdas, 19 de código, 4 figuras.
+
+Los cuatro notebooks por etapa se conservan como **anexo**: el consolidado no los
+repite, los referencia.
+
+**Los dos componentes de los datos quedan explícitos**, que es lo que pedía la
+asignatura:
+
+- **Text Analytics** — el texto libre de la reseña, que es el objeto del análisis, y el
+  diccionario de 81 términos que constituye la lectura a priori.
+- **Web Analytics** — los metadatos de la plataforma: calificación en estrellas, ficha
+  del establecimiento, zona por distancia al Parque Caldas, si el propietario respondió,
+  actividad de quien escribe, fecha y volumen de reseñas del local.
+
+El argumento que los une: los temas salen del texto, pero **su interpretación se apoya en
+la calificación, la zona y el establecimiento**. Un tema sin su calificación no dice si
+es una fortaleza o un problema.
+
+Generado desde `scripts/notebook_final.py`, con versión Colab y HTML como los demás.
+
+### 2. `dataset/`
+
+Cinco archivos con su diccionario de datos y sus hashes:
+
+| Archivo | Unidad | Filas × Col |
+|---|---|---|
+| `corpus_final.csv` | una reseña | 8.451 × 15 |
+| `marco_muestral_final.csv` | un establecimiento | 133 × 19 |
+| `dimensiones.csv` | un término | 144 × 8 |
+| `fragmentos_topicos.csv` | un fragmento | 5.913 × 22 |
+| `temas_consolidado.csv` | un tema | 14 × 10 |
+
+`fragmentos_topicos.csv` une aquí el corpus de fragmentos con su tópico asignado, que en
+`data/processed/` viven en archivos separados.
+
+`diccionario_datos.md` describe cada archivo, su unidad de análisis, **todas sus columnas
+con tipo y vacíos**, su procedencia y cómo se enlazan entre sí, más el manifiesto de
+integridad con los SHA-256. Las tablas de columnas se generan desde los propios CSV; solo
+las descripciones se escriben a mano, en `scripts/descripciones_columnas.py`.
+
+**Un bug corregido sobre la marcha**: la primera versión aplicaba `replace(",", ".")` a
+la línea entera para el separador de miles, y se comió las comas de la prosa
+(«reputacion-popayan, captura de Google Maps» → «reputacion-popayan. captura»). Ahora el
+formato se aplica solo al número.
+
+### 3. README como portada
+
+Reescrito: el hallazgo primero, las cuatro figuras embebidas, la tabla de notebooks con
+badges de Colab, el dashboard, la estructura, el orden de ejecución completo y la nota de
+uso académico.
+
+**Los badges llevan `USUARIO` como marcador**, que hay que reemplazar por el usuario de
+GitHub al publicar. Se deja explícito en el propio README para que no pase inadvertido.
+
+### 4. Preparación para publicar — NO se publicó
+
+Se dejó todo listo, pero **la publicación queda pendiente de decisión**, como se pidió.
+
+**Rutas personales eliminadas.** `src/config.py` tenía `/Users/noovou/...` escrito a
+mano. Ahora:
+
+```python
+ORIGEN = Path(os.environ.get("REPUTACION_POPAYAN", Path.home() / "dev" / "fup" / "..."))
+```
+
+Y los notebooks imprimían la ruta absoluta en sus salidas, lo que en un repositorio
+público delata el nombre de usuario. El preámbulo ahora imprime solo el nombre de la
+carpeta. Se regeneraron y reejecutaron los diez.
+
+**GitHub Pages**: `docs/index.md` como portada con enlaces a los cinco HTML y a la
+documentación, `docs/_config.yml` con el tema y `docs/.nojekyll`. Se configura en
+Settings → Pages → Source: `main` / carpeta `/docs`.
+
+**Streamlit Community Cloud**: `requirements.txt` y `.streamlit/config.toml`.
+
+El requirements **no incluye `sentence-transformers`** a propósito: arrastra torch, más
+de 1 GB instalado, y Community Cloud da 1 GB de RAM. En vez de que falle allí, el
+explorador **degrada con elegancia**: `busqueda.hay_embeddings()` comprueba si la
+librería y la matriz están disponibles, y si no, ofrece solo la búsqueda por coincidencia
+de palabras y lo explica en pantalla. En local sigue funcionando todo.
+
+**Inventario de publicación** (`scripts/inventario_publicacion.py`, no publica nada):
+
+| Bloque | Archivos | Tamaño |
+|---|---:|---:|
+| `data/` | 26 | 13,07 MB |
+| `dataset/` | 7 | 3,95 MB |
+| `docs/` | 11 | 3,67 MB |
+| `notebooks/` | 10 | 2,28 MB |
+| `figuras/` | 8 | 0,90 MB |
+| resto | 59 | 0,82 MB |
+| **TOTAL** | **121** | **24,69 MB** |
+
+Fuera del repositorio quedan 1.447 MB, casi todo el `.venv`.
+
+**Comprobaciones**: sin rutas personales, sin credenciales. Aparece un correo, el del
+autor en `pyproject.toml`, que es intencional.
+
+### Revisión de datos personales del corpus
+
+Hecha antes de preparar nada, porque condiciona la decisión de publicar:
+
+- **Sin correos.** El único `@` del corpus era «meser@s», lenguaje inclusivo.
+- **Sin autores identificables.** El corpus no trae nombre ni identificador: solo
+  `autor_n_resenas`, un conteo. La anonimización viene de origen.
+- **Cinco reseñas con 7+ dígitos**: cuatro son la dirección y el teléfono **comercial** de
+  un local, una es «10000000/10» como broma sobre la calificación.
+- **33 reseñas mencionan a personal por su nombre** de pila o apodo, tal como lo escribió
+  quien reseñó. Ya están publicadas en Google Maps y se conservan porque eliminarlas
+  alteraría el texto que se analiza. Queda advertido en el README.
+
+### Estado
+
+Nuevos: `notebooks/proyecto_final.ipynb` (+ Colab + HTML), `dataset/` con 7 archivos,
+`requirements.txt`, `.streamlit/config.toml`, `docs/index.md`, `docs/_config.yml`,
+`docs/.nojekyll`, y los scripts `construir_dataset`, `diccionario_datos`,
+`descripciones_columnas`, `notebook_final` e `inventario_publicacion`. README reescrito.
+77 pruebas pasan.

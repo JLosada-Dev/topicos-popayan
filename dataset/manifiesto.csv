@@ -1,0 +1,6 @@
+archivo,unidad_de_analisis,filas,columnas,bytes,sha256,procedencia
+corpus_final.csv,una reseña,8451,15,1979504,8478fa5ace844b13c3dcc239f753e327af52e1bc607590e5dddba2c2f90c6fbd,"Proyecto previo `reputacion-popayan`, captura de Google Maps vía Apify"
+marco_muestral_final.csv,un establecimiento,133,19,32933,2c4a8587aed84d48dc42b2d8928e14e6c54a332af546daf9d385bdf0069ec175,"Proyecto previo `reputacion-popayan`, marco muestral del estudio"
+dimensiones.csv,un término del diccionario,144,8,15231,67393d3a4e7cf1ff0187bdad49a5ecf9b6e6beec7dcd5fe12fb2ea35124a21df,"Proyecto previo `reputacion-popayan`, diccionario construido y validado allí"
+fragmentos_topicos.csv,un fragmento (cláusula),5913,22,2106948,fc84f8893ed9ed194538240cc105d9a9000381ea96b2614c91b84cac0cb1a0ba,Producido por este proyecto con `scripts/construir_fragmentos.py`
+temas_consolidado.csv,un tema,14,10,1281,8e73d16c341a8e2c86bd423c66151975c58e2f4a130f42b03e8ba1030a2f2856,Producido por este proyecto con `scripts/tabla_temas.py`

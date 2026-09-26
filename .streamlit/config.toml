@@ -1,0 +1,9 @@
+[theme]
+base = "light"
+
+[server]
+# El dashboard solo lee CSV; no recibe archivos del usuario
+maxUploadSize = 1
+
+[browser]
+gatherUsageStats = false

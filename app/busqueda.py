@@ -47,6 +47,23 @@ def falta_tfidf() -> bool:
     return any(not (DATOS_PROCESADOS / n).exists() for n in ARCHIVOS_TFIDF)
 
 
+def hay_embeddings() -> bool:
+    """Si la búsqueda por significado se puede ofrecer en este despliegue.
+
+    Necesita `sentence-transformers`, que arrastra torch: más de 1 GB instalado. En
+    local está; en Streamlit Community Cloud no cabe en la memoria disponible, así que
+    allí el explorador ofrece solo TF-IDF y lo dice en pantalla.
+    """
+    ruta_matriz, _ = rutas(MODELO_EMBEDDINGS)
+    if not ruta_matriz.exists():
+        return False
+    try:
+        import sentence_transformers  # noqa: F401
+    except ImportError:
+        return False
+    return True
+
+
 def precargar_embeddings() -> None:
     """Fuerza la carga del modelo dentro del spinner, no en mitad de la búsqueda."""
     _modelo_embeddings()

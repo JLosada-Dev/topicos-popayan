@@ -7835,7 +7835,7 @@ vocabulario del diccionario.</li>
 
 <span class="n">RAIZ</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span> <span class="k">if</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"notebooks"</span> <span class="k">else</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
 <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">RAIZ</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"raíz del proyecto: </span><span class="si">{</span><span class="n">RAIZ</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"raíz del proyecto: </span><span class="si">{</span><span class="n">RAIZ</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">/  ·  datos: </span><span class="si">{</span><span class="p">(</span><span class="n">RAIZ</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="s1">'data'</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="s1">'processed'</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -7848,7 +7848,7 @@ vocabulario del diccionario.</li>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>raíz del proyecto: /Users/noovou/dev/fup/topicos-popayan
+<pre>raíz del proyecto: topicos-popayan/  ·  datos: True
 </pre>
 </div>
 </div>

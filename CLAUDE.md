@@ -37,7 +37,8 @@ orientar la comunicación digital de los establecimientos.
 ## Relación con el proyecto original
 
 Existe un proyecto previo (`reputacion-popayan`, capítulo de libro) sobre el mismo
-corpus, en `/Users/noovou/dev/fup/reputacion-popayan`. Ese proyecto es SOLO LECTURA.
+corpus. No es público; su ruta se configura con la variable de entorno
+`REPUTACION_POPAYAN`. Ese proyecto es SOLO LECTURA.
 
 - Nunca escribir, mover ni borrar nada dentro de esa ruta.
 - No importar módulos del original. Si se necesita una función (segmentación,

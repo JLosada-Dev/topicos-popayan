@@ -1,0 +1,97 @@
+"""Qué significa cada columna de los archivos de `dataset/`.
+
+Se mantiene aparte del generador porque es lo único que hay que escribir a mano: el
+resto del diccionario de datos se lee de los propios CSV.
+"""
+
+DESCRIPCIONES = {
+    "corpus_final.csv": {
+        "review_id": "Identificador único de la reseña, asignado por Google Maps.",
+        "place_id": "Identificador del establecimiento, asignado por Google Maps.",
+        "establecimiento": "Nombre comercial del establecimiento.",
+        "rating": "Calificación en estrellas que dio la persona, de 1 a 5.",
+        "texto": "Texto de la reseña, tal como se publicó.",
+        "fecha": "Fecha y hora de publicación.",
+        "respuesta_dueno": "Si el propietario respondió la reseña.",
+        "autor_n_resenas": "Número de reseñas que ha escrito esa persona. **Es el único "
+                           "dato de autoría: no hay nombre ni identificador.**",
+        "rat_comida": "Calificación de comida, cuando la persona la dio por separado.",
+        "rat_servicio": "Calificación de servicio por separado. Vacío si no la dio.",
+        "rat_ambiente": "Calificación de ambiente por separado. Vacío si no la dio.",
+        "fuente": "Origen de la captura.",
+        "tiene_texto": "Si la reseña trae texto o es solo una calificación.",
+        "largo": "Longitud del texto en caracteres.",
+        "apto": "Si la reseña entra al estudio: tiene texto y al menos 50 caracteres.",
+    },
+    "marco_muestral_final.csv": {
+        "place_id": "Identificador del establecimiento; enlaza con `corpus_final.csv`.",
+        "name": "Nombre comercial.",
+        "type": "Categoría principal en Google Maps.",
+        "subtypes": "Categorías secundarias, separadas por coma.",
+        "address": "Dirección comercial.",
+        "latitude": "Latitud.",
+        "longitude": "Longitud.",
+        "dist_parque_caldas": "Distancia en metros al Parque Caldas, centro de la ciudad.",
+        "zona": "`centro` o `fuera`, según la distancia al centro histórico.",
+        "rating": "Calificación media del establecimiento en Google Maps.",
+        "reviews": "Número total de reseñas del establecimiento.",
+        "reviews_per_score_1": "Cuántas reseñas de 1 estrella tiene.",
+        "reviews_per_score_2": "Cuántas de 2 estrellas.",
+        "reviews_per_score_3": "Cuántas de 3 estrellas.",
+        "reviews_per_score_4": "Cuántas de 4 estrellas.",
+        "reviews_per_score_5": "Cuántas de 5 estrellas.",
+        "query": "Consulta con la que se encontró el establecimiento.",
+        "incluido": "Si entró al marco muestral del estudio.",
+        "motivo_exclusion": "Por qué se excluyó, cuando aplica.",
+    },
+    "dimensiones.csv": {
+        "dimension": "A cuál de las seis dimensiones pertenece el término.",
+        "termino": "El término, en su forma legible.",
+        "raiz": "Raíz o expresión regular con la que se busca en el texto normalizado.",
+        "categoria": "Tipo de término: genérico, plato, atributo.",
+        "estado": "`incluido` o `excluido`. Solo se usan los incluidos, 81 de 144.",
+        "patron_contexto": "Expresión regular de contexto, cuando el término la necesita.",
+        "modo_contexto": "Cómo se evalúa el contexto: `requiere`, `veta_previa` o "
+                         "`veta_posterior`.",
+        "nota": "Observación de quien construyó el diccionario.",
+    },
+    "fragmentos_topicos.csv": {
+        "fragmento_id": "Identificador del fragmento: `review_id` más su número de orden.",
+        "review_id": "Reseña de la que procede. Permite reagrupar por reseña.",
+        "place_id": "Establecimiento; enlaza con `marco_muestral_final.csv`.",
+        "establecimiento": "Nombre comercial.",
+        "zona": "`centro` o `fuera`.",
+        "rating": "Calificación de la reseña de origen. **Se hereda: todos los fragmentos "
+                  "de una misma reseña comparten la misma calificación.**",
+        "fragmento_num": "Posición del fragmento dentro de su reseña.",
+        "n_fragmentos_resena": "Cuántos fragmentos produjo esa reseña.",
+        "texto": "El fragmento, enmascarado con `[LOCAL]` pero natural: conserva "
+                 "mayúsculas, tildes y stopwords. **Es el que alimenta los embeddings.**",
+        "texto_limpio": "Minúsculas, sin puntuación ni stopwords, con las negaciones "
+                        "conservadas. **Solo alimenta el c-TF-IDF.**",
+        "largo_caracteres": "Longitud del fragmento en caracteres.",
+        "largo_palabras": "Longitud en palabras.",
+        "tiene_local": "Si el fragmento contiene el marcador `[LOCAL]`.",
+        "ambiente": "Si el fragmento activa la dimensión ambiente.",
+        "comida": "Si activa la dimensión comida.",
+        "espera": "Si activa la dimensión tiempo de espera.",
+        "patrimonio": "Si activa la dimensión patrimonio o tradición.",
+        "precio": "Si activa la dimensión precio.",
+        "servicio": "Si activa la dimensión servicio.",
+        "n_dim": "Cuántas dimensiones activa, de 0 a 5.",
+        "topico": "Tópico asignado por el modelo. `-1` significa sin asignar.",
+        "topico_sin_reduccion": "Tópico antes de reasignar atípicos, para auditar ese paso.",
+    },
+    "temas_consolidado.csv": {
+        "tema": "Nombre del tema, asignado a mano tras leer los tópicos que lo componen.",
+        "tipo": "`atributo_esquema`, `atributo_nuevo` o `valoracion_global`.",
+        "topicos": "Qué tópicos lo componen.",
+        "n_topicos": "Cuántos tópicos lo componen.",
+        "fragmentos": "Cuántos fragmentos reúne.",
+        "pct_asignado": "Porcentaje sobre los fragmentos asignados a algún tópico.",
+        "rating": "Calificación media, ponderada por el tamaño de cada tópico.",
+        "pct_1_2_estrellas": "Porcentaje de fragmentos de reseñas de 1 o 2 estrellas.",
+        "polaridad_dominante": "`positiva`, `negativa` o `mixta`.",
+        "subtemas": "Subtemas, cuando el tema se subdivide.",
+    },
+}
