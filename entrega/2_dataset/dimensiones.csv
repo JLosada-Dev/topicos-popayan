@@ -1,0 +1,145 @@
+dimension,termino,raiz,categoria,estado,patron_contexto,modo_contexto,nota
+patrimonio,pipián,pipian,plato,incluido,,,
+patrimonio,carantanta,carantant,plato,incluido,,,
+patrimonio,salpicón,salpicon,plato,incluido,,,
+patrimonio,empanada,empanad,plato,incluido,,,"cubre empanada(s), empanadita(s)"
+patrimonio,tamal,tamal,plato,incluido,,,cubre tamal(es)
+patrimonio,champús,champus,plato,incluido,,,
+patrimonio,aplanchado,aplanchad,plato,incluido,,,
+patrimonio,envuelto,envuelt,plato,incluido,\s+(?:en|con)\b,veta_posterior,"solo el plato; se veta el participio «envuelto en papel/hoja/aluminio»"
+patrimonio,típico,tipic,tradicion,incluido,,,cubre típico/a(s)
+patrimonio,tradición,tradicion,tradicion,incluido,,,cubre tradición y tradicional(es)
+patrimonio,payanés,payanes,tradicion,incluido,,,cubre payanés/payanesa(s)
+patrimonio,casero,caser,tradicion,incluido,,,cubre casero/a(s)
+patrimonio,ancestral,ancestr,tradicion,incluido,,,cubre ancestral(es) y ancestro(s)
+patrimonio,auténtico,autentic,tradicion,incluido,"(?:\s+\w+){0,2}\s+(?:mexican|italian|argentin|peruan|japones|chin[oa]|espanol|frances|american|arabe|turc[oa]|grieg[oa]|brasilen|venezolan|cuban[oa]|indi[oa]|hindu|corean|mediterrane|oriental|asiatic|europe[oa]|texan|tailandes|libanes|aleman|suiz[oa]|portugues|rus[oa]|vietnamita)\w*",veta_posterior,"cubre auténtico/a(s) y autenticidad; se veta cuando lo sigue un gentilicio no colombiano"
+patrimonio,Popayán,popayan,territorial,excluido,,,referencia territorial: indica ubicación y no atributo culinario
+patrimonio,Cauca,cauca,territorial,excluido,,,referencia territorial: indica ubicación y no atributo culinario
+patrimonio,sazón,sazon,tradicion,excluido,,,"n=50; atributo de sabor genérico. Trasladado a la dimensión Comida el 2026-09-09"
+patrimonio,arepa,arep,plato,excluido,,,n=18; colombiano genérico y no payanés
+patrimonio,sancocho,sancoch,plato,excluido,,,n=13; colombiano genérico y no payanés
+patrimonio,lechona,lechon,plato,excluido,,,"n=10; colombiano genérico y no payanés, además tolimense"
+patrimonio,almojábana,almojaban,plato,excluido,,,n=3; colombiano genérico y no payanés
+patrimonio,pandebono,pan\s?de\s?bono,plato,excluido,,,n=2; colombiano genérico y no payanés
+patrimonio,colonial,colonial,tradicion,excluido,,,n=9; describe decoración y arquitectura del local
+patrimonio,antiguo,antigu,tradicion,excluido,,,n=3; describe el ambiente del local
+patrimonio,raíces,raices,tradicion,excluido,,,"n=3; aparece fuera de contexto patrimonial (raíces latinas, raíces chinas)"
+patrimonio,receta,receta,tradicion,excluido,,,"n=6; aparece fuera de contexto patrimonial (cochinita pibil, sushi)"
+patrimonio,abuela,abuel,tradicion,excluido,,,n=8; aparece fuera de contexto patrimonial y sobre todo como referencia a la decoración
+patrimonio,criollo,crioll,tradicion,excluido,,,n=2; aparece fuera de contexto patrimonial (lengua a la criolla)
+patrimonio,costumbre,costumbr,tradicion,excluido,,,"n=1; aparece fuera de contexto patrimonial («como de costumbre»)"
+patrimonio,herencia,herenci,tradicion,excluido,,,n=1; solo aparece como nombre del establecimiento
+patrimonio,manjar blanco,manjar\s?blanco,plato,excluido,,,n=1; sin volumen en el corpus
+patrimonio,ullucos,ulluc,plato,excluido,,,n=0; sin ocurrencias en el corpus
+patrimonio,cuy,cuy(?:es)?,plato,excluido,,,n=0; sin ocurrencias en el corpus
+patrimonio,morcilla,morcill,plato,excluido,,,n=0; sin ocurrencias en el corpus
+patrimonio,fritanga,fritang,plato,excluido,,,n=0; sin ocurrencias en el corpus
+patrimonio,patrimonio,patrimoni,tradicion,excluido,,,n=0; sin ocurrencias en el corpus
+comida,comida,comid,generico,incluido,,,"n=1129 (46,4 %). Término central de la dimensión; su alta frecuencia es un hallazgo, no un defecto"
+comida,delicioso,delicios,atributo,incluido,,,n=546
+comida,plato,plat[oi],generico,incluido,,,"n=349; cubre plato(s), platillo(s), platito(s)"
+comida,rico,ric[oa]s?\b,atributo,incluido,,,n=326; sin casos de «rico» de riqueza en el corpus
+comida,sabor,sabor,atributo,incluido,,,n=272
+comida,carne,carn,producto,incluido,,,n=127
+comida,porción,porci,atributo,incluido,,,n=92; cantidad servida
+comida,menú,menu,generico,incluido,,,n=92; oferta gastronómica
+comida,bebida,bebid,producto,incluido,,,n=79
+comida,pollo,poll[oa],producto,incluido,,,n=66
+comida,exquisito,exquisit,atributo,incluido,,,n=59
+comida,arroz,arroz,producto,incluido,,,n=51
+comida,sazón,sazon,atributo,incluido,,,n=50; trasladado desde Patrimonio el 2026-09-09
+comida,postre,postr,producto,incluido,,,n=48
+comida,ingredientes,ingredient,generico,incluido,,,n=45
+comida,pizza,pizz,producto,incluido,,,n=85
+comida,hamburguesa,hamburgues,producto,incluido,,,n=74
+comida,quemado,quemad|crud[oa]s?\b|grasos|aceitos,defecto,incluido,,,"n=30; defectos de preparación: quemado, crudo, grasoso, aceitoso"
+comida,insípido,insipid|desabrid|sos[oa]s?\b,defecto,incluido,,,"n=16; defectos de sabor: insípido, desabrido, soso"
+comida,calidad,calidad,atributo,excluido,,,"n=207; 40 % aparece junto a precio o costo. Asignado a la dimensión Precio"
+comida,carta,carta,generico,excluido,,,"n=111; mezcla oferta gastronómica con «el mesero me dejó la carta», que es servicio"
+comida,presentación,presentaci,atributo,excluido,,,n=66; ambiguo entre emplatado y presentación del local
+comida,variedad,varied,atributo,excluido,,,n=73; ambiguo entre variedad de platos y de bebidas u opciones
+comida,fresco,fresc,atributo,excluido,,,n=65; ambiguo entre ingrediente fresco y clima
+comida,frío,fri[oa]s?\b,atributo,excluido,,,n=52; ambiguo entre plato frío y clima de Popayán
+comida,caliente,calient,atributo,excluido,,,n=18; ambiguo entre temperatura del plato y del local
+comida,cocina,cocin,generico,excluido,,,"n=52; ambiguo entre arte culinario, espacio físico y verbo cocinar"
+comida,cantidad,cantidad,atributo,excluido,,,n=40; ambiguo entre cantidad de comida y de gente
+comida,duro,dur[oa]s?\b,defecto,excluido,,,"n=21; ambiguo entre carne dura y «duro» de difícil"
+comida,abundante,abundant,atributo,excluido,,,n=14; solapa con porción y con precio
+servicio,atención,atenci,generico,incluido,,,"n=739; «llamó la atención» es apenas el 0,5 % de las ocurrencias"
+servicio,servicio,servici,generico,incluido,,,n=593; incluye «servicio a domicilio»
+servicio,atender,atend|atien|atent[oa]s?\b,generico,incluido,,,"n=237; cubre atender, atienden, atendieron, atento(s)"
+servicio,mesero,meser[oa],personal,incluido,,,"n=142; cubre mesero(s), mesera(s)"
+servicio,amable,amab,atributo,incluido,,,"n=129; cubre amable(s), amabilidad, amablemente"
+servicio,rápido,rapid|agil,atributo,incluido,comidas?\s+,veta_previa,"n=122; el 64 % califica la atención. Se veta «comidas rápidas», que es categoría de local"
+servicio,personal,personal(?:es)?\b,personal,incluido,"(?:a\s+nivel|toque|nivel|opinion|gusto)\s+",veta_previa,"n=109; solo como sustantivo. La raíz excluye personalmente y personalizado, y el veto quita «a nivel personal»"
+servicio,dueño,duen[oa]|administrador|chef|cociner,personal,incluido,,,n=54; menciones al staff distinto del mesero
+servicio,amabilidad,amabilidad|cordial|servicial,atributo,incluido,,,n=40
+servicio,reserva,reserv,generico,incluido,,,n=37
+servicio,grosero,groser|descortes|antipatic|altaner|malencarad,atributo,incluido,,,"n=30; negativos de trato: grosero, descortés, antipático, altanero, malencarado"
+servicio,pendiente,pendient|diligent|eficient,atributo,incluido,,,n=24; atributos positivos de atención
+servicio,error,error|equivoc|confund,defecto,incluido,,,n=17; fallos de servicio
+servicio,ignorar,desatend|ignor|abandonad,defecto,incluido,,,n=9; desatención
+servicio,recomendar,recomend,generico,excluido,,,"n=359; es juicio global sobre el establecimiento, no sobre el servicio"
+servicio,cuenta,cuenta,generico,excluido,,,"n=70; contaminado: 31 % es «cuenta con» (dispone de) y 5 % «darse cuenta»"
+servicio,pedido,pedid,generico,excluido,,,n=133; ambiguo entre el pedido como objeto y el proceso de atención
+servicio,domicilio,domicili,generico,excluido,,,"n=86; es modalidad de entrega, no trato al cliente"
+servicio,cliente,client,generico,excluido,,,n=129; ambiguo entre «atención al cliente» y aforo del local
+servicio,trato,trat,generico,excluido,,,n=27; ambiguo entre el trato recibido y el verbo tratar
+servicio,propina,propin,generico,excluido,,,n=12; solapa con la dimensión Precio
+ambiente,lugar,lugar,generico,incluido,"\b(?:acogedor|tranquil|bonit|lind[oa]|hermos|agradab|ampli|comod|limpi|decorac|ambient|music|iluminac|ruid|terraz|romantic|intim|excelent|buen|maravill|espectacul|genial|elegant|increibl|perfect|ideal|chever|encant|imperdib|magnific|divin|precios)\w*|\bcalid[oa]s?\b|\bespacios[oa]s?\b",requiere,"n=765; requiere un adjetivo de ambiente o un evaluativo en la misma oración. Suelto es locativo. Lista ampliada el 2026-09-11 (variante V1) tras la validación manual"
+ambiente,sitio,siti[oa]s?\b,generico,incluido,"\b(?:acogedor|tranquil|bonit|lind[oa]|hermos|agradab|ampli|comod|limpi|decorac|ambient|music|iluminac|ruid|terraz|romantic|intim|excelent|buen|maravill|espectacul|genial|elegant|increibl|perfect|ideal|chever|encant|imperdib|magnific|divin|precios)\w*|\bcalid[oa]s?\b|\bespacios[oa]s?\b",requiere,n=214; mismo control que lugar
+ambiente,ambiente,ambient,generico,incluido,,,"n=327; cubre ambiente, ambientación, ambientado"
+ambiente,agradable,agradab,atributo,incluido,,,"n=297; el 78 % aparece junto a ambiente, lugar o sitio"
+ambiente,amplio,ampli|estrech,atributo,incluido,,,"n=133 con «pequeño» incluido; desde el 2026-09-11 solo amplio y estrecho"
+ambiente,pequeño,pequen[oa],atributo,excluido,,,"retirado el 2026-09-11; en 3 de sus 4 falsos positivos de la muestra de validación se refiere a la porción de comida y no al tamaño del local"
+ambiente,mesa,mesas?\b,mobiliario,excluido,,,"n=121; retirado el 2026-09-11; aparece sobre todo en contextos de servicio y logística («si encuentran mesa», «nadie nos asignó una mesa», «servir a la mesa»), no de mobiliario. Disparó 11 de los 18 falsos positivos de ambiente"
+ambiente,acogedor,acogedor,atributo,incluido,,,n=87; el más específico de la dimensión
+ambiente,música,music,generico,incluido,,,n=70
+ambiente,tranquilo,tranquil,atributo,incluido,,,n=62
+ambiente,decoración,decoraci|decorad,generico,incluido,,,n=60
+ambiente,baño,ban[oa]s?\b,instalacion,incluido,,,n=18; la raíz exige límite de palabra y no captura «bañado»
+ambiente,terraza,terraz|patio|balcon,instalacion,incluido,,,n=11
+ambiente,iluminación,iluminaci|luz\b|luces\b,generico,incluido,,,n=10
+ambiente,ruido,ruid|bullici,atributo,incluido,,,n=10
+ambiente,romántico,romantic|intim[oa],atributo,incluido,,,n=7
+ambiente,bonito,bonit|lind[oa]|hermos,atributo,excluido,,,"n=220; también califican el plato («la presentación muy linda»)"
+ambiente,parqueadero,parqueader|parque|parquear|estacionamiento,instalacion,excluido,,,"n=55; riesgo con «Parque Caldas», que es referencia territorial: el 17 % de las ocurrencias"
+ambiente,espacio,espaci,generico,excluido,,,"n=67; ambiguo entre espacio del local y «espacio para parquear»"
+ambiente,cómodo,comod,atributo,excluido,,,"n=44; ambiguo entre comodidad física y «cómodo» de barato"
+ambiente,familiar,familiar,atributo,excluido,,,"n=36; ambiguo entre «ambiente familiar» y la familia como acompañante"
+ambiente,local,local,generico,excluido,,,"n=34; ambiguo entre el local y «comida local», que es patrimonio"
+ambiente,limpio,limpi|aseo|higien,atributo,excluido,,,n=31; ambiguo entre limpieza del local y de la comida
+ambiente,clima,calor|frio,atributo,excluido,,,n=26; compite con la temperatura del plato en la dimensión Comida
+ambiente,vista,vista,generico,excluido,,,"n=24; ambiguo entre la vista del lugar y «a la vista»"
+precio,precio,preci[oa]s?\b,generico,incluido,,,"n=324 antes de acotar; la raíz se limita a preci[oa]s? para no capturar «precioso» ni «precisamente»"
+precio,calidad,calidad,generico,incluido,"\bpreci\w*|\bcost\w*|\bcuest\w*|\brelacion\w*",requiere,"n=207; solo cuenta si hay precio, costo o relación en la misma oración. El 40 % de las ocurrencias lo tiene"
+precio,costoso,costos|cuesta|cost[oe]s?\b,atributo,incluido,,,"n=73; cubre costoso, costosa, cuesta, costo"
+precio,relación,relaci,generico,incluido,,,"n=51; casi siempre «relación calidad-precio»"
+precio,asequible,asequib|accesib|razonab,atributo,incluido,,,n=42
+precio,caro,car[oa]s?\b,atributo,incluido,,,n=33
+precio,económico,economic,atributo,incluido,,,n=20
+precio,promoción,promoci|descuent,generico,incluido,,,"n=17 con «oferta» incluida; aquí solo promoción y descuento, porque «oferta» también significa surtido"
+precio,barato,barat,atributo,incluido,,,n=14
+precio,presupuesto,presupuest|bolsill,generico,incluido,,,n=9
+precio,pagar,pag[oaue],generico,excluido,,,"n=96; el 27 % es medio de pago (efectivo, tarjeta, QR) y no juicio sobre el precio"
+precio,vale,vale[nr]?\b,generico,excluido,,,"n=58; el 59 % es «vale la pena», que es juicio global"
+precio,vale la pena,vale\s+la\s+pena,generico,excluido,,,"n=34; expresión fija de recomendación, no de precio"
+precio,pesos,pesos|mil,generico,excluido,,,"n=50; «mil veces» y «mil gracias» son falsos positivos frecuentes"
+precio,sobrevalorado,sobrevalorad|exagerad|excesiv|abusiv,atributo,excluido,,,"n=21; «excesivamente demorado» pertenece a Tiempo de espera"
+precio,valor,valor,generico,excluido,,,"n=16; ambiguo entre valor monetario y «propuesta de valor»"
+precio,propina,propin,generico,excluido,,,n=12; solapa con la dimensión Servicio
+precio,gratis,gratis|cortesia,generico,excluido,,,"n=9; «falta de cortesía» pertenece a Servicio"
+espera,demora,demor,generico,incluido,,,n=154; el término más limpio de la dimensión
+espera,espera,espera(?!ba)\w*|espere,generico,incluido,,,"n=146; la raíz veta «esperaba» y no alcanza «espero», ambos de expectativa"
+espera,hora,horas?\b,duracion,incluido,"\b(?:una|dos|tres|cuatro|cinco|seis|media|casi|varias|largas|much[ao]s|much[ai]sim[ao]s|tantas|par\s+de)\s+horas?\b|\d+\s*(?:[.,]\d+)?\s*horas?\b|\bhoras?\s+(?:y\s+media|de\s+espera|esperando)\b",requiere,"n=139; solo cuenta como duración. La raíz excluye «horario» y el requisito descarta la hora del día"
+espera,tiempo,tiemp,duracion,incluido,hace\s+(?:mucho\s+|poco\s+|un\s+)?,veta_previa,"n=79; se veta «hace tiempo». Queda como residuo «al mismo tiempo»"
+espera,minutos,minut,duracion,incluido,,,n=53
+espera,tardar,tard[ao],generico,incluido,,,"n=27; la raíz cubre tarda, tardó, tardaron, tardado y excluye «tarde»"
+espera,lento,lent,atributo,incluido,,,n=14
+espera,inmediato,inmediat|enseguida|al\s+instante,atributo,incluido,,,n=8
+espera,fila,fila|turno|colas?\b,generico,incluido,,,n=7
+espera,eterno,etern|siglo,atributo,incluido,,,n=4; hipérbole de demora
+espera,rápido,rapid|agil,atributo,excluido,,,"n=122; el 64 % califica la atención. Asignado a la dimensión Servicio"
+espera,oportuno,oportun,atributo,excluido,,,"n=26; casi todas las ocurrencias son «oportunidad», no puntualidad"
+espera,pronto,pront[oa]s?\b,atributo,excluido,,,"n=11; «de pronto» es muletilla payanesa de duda, no rapidez"
+espera,puntual,puntual,atributo,excluido,,,n=1; sin volumen en el corpus

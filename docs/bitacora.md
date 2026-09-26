@@ -2219,12 +2219,22 @@ Una primera versión del chequeo dio orden incorrecto: comparaba las páginas de
 —recortadas y encajadas— contra las capturas sin transformar. El fallo era de la
 comprobación, no del PDF.
 
-### `entrega/` no se versiona
+### `entrega/` sí se versiona
 
-Se añadió al `.gitignore`. Es **derivada al cien por cien** de archivos que ya están en
-el repositorio, con sus hashes en `dataset/manifiesto.csv`. Versionarla duplicaría 7 MB
-sin aportar información y se desincronizaría en cuanto cambiara cualquier fuente. Se
-regenera con dos órdenes, en este orden:
+Se propuso ignorarla, por ser derivada al cien por cien de archivos que ya están en el
+repositorio. **El autor decidió lo contrario**: prefiere tener congelado exactamente lo
+que subió a Classroom, aunque se pueda regenerar. Queda versionada, 14 MB.
+
+La consecuencia obligó a un cambio: `armar_entrega.py` borraba `entrega/` entera antes
+de reconstruirla, y eso se habría llevado por delante las capturas y el PDF que produce
+`exportar_presentacion.py`. Ahora solo rehace las carpetas que son suyas, `1_notebook/`
+y `2_dataset/`, y respeta `3_presentacion/`.
+
+Se añadió también `proyecto_final.html` a `1_notebook/html/`: el `.ipynb` necesita
+Jupyter o Colab, y sin esa copia un docente que no use ninguno de los dos no podría leer
+el estudio.
+
+Para regenerar, en este orden:
 
 ```bash
 uv run python -m scripts.armar_entrega          # estructura y copias
