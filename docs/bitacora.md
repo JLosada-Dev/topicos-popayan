@@ -2056,3 +2056,69 @@ autor**:
 uv run python -m scripts.revisar_dashboard              # todo
 uv run python -m scripts.revisar_dashboard presentacion # solo la presentación
 ```
+
+---
+
+## 2026-09-25 — Revisión visual sección por sección
+
+El autor detectó que el gráfico de la sección Temas salía **sin barras**. Tenía razón y
+el fallo fue de método: lo capturé pero no lo miré. Se revisaron las cinco secciones, una
+por una, y apareció más de lo previsto.
+
+### El gráfico de Temas no dibujaba nada
+
+Mismo origen que el de la presentación: con el ancho del contenedor, Streamlit aplica
+`autosize: fit`, el área de trazado se queda sin espacio y **las barras salen con ancho
+cero**. Reconstruido con el enfoque que ya funcionaba: nombre del tema dentro de la
+barra, ancho explícito y `width="content"`. Se conservan las tres facetas por tipo y el
+filtro.
+
+### Un bug de rendimiento en el Explorador
+
+La sección tardaba en cargar y las capturas salían a medio renderizar, con el contenido
+de la sección anterior debajo. La causa: `hay_embeddings()` **importaba
+`sentence_transformers` solo para comprobar si existe**, y esa importación tarda **5,3
+segundos**. Se cambió a `importlib.util.find_spec`, que localiza el paquete sin
+ejecutarlo: **0 ms**, y además cacheado.
+
+No era solo un problema de captura: cada vez que alguien abría el Explorador esperaba
+esos cinco segundos.
+
+### La nota de métodos no se mostraba
+
+El texto que explica la diferencia entre TF-IDF y embeddings estaba definido pero la
+línea que lo pintaba se había perdido en una edición anterior. Repuesta, y ahora se
+recorta sola cuando la búsqueda semántica no está disponible.
+
+### Separadores a la española
+
+Todo el panel mostraba `0.41`, `3.70`, `19.3 %` y `1141 fragmentos`. Se centralizaron
+`coma()` y `miles()` en `src/etiquetas.py`, junto a `legible()`: las tres responden a la
+misma pregunta, cómo se escribe algo para que lo lea una persona. Aplicados en las cinco
+secciones y en la presentación.
+
+### Tildes en los subtemas
+
+`asiatica`, `cafe`, `presentacion y variedad` aparecían sin tildes en el detalle del tema
+y en el selector de tópicos. Ya usan `legible()`.
+
+### El script de revisión, corregido
+
+Dos fallos propios que producían capturas engañosas:
+
+- **Esperaba solo a que desapareciera el esqueleto de carga.** Al cambiar de sección
+  Streamlit no lo muestra, así que capturaba a media ejecución. Ahora espera también a
+  que desaparezca el indicador de estado, el botón «Stop» de la barra superior.
+- **La ventana era de 1.000 px de alto** y las secciones largas salían cortadas, porque
+  Streamlit usa scroll interno y `full_page` no lo extiende. Subida a 2.400 px.
+
+### Nota sobre el servidor
+
+El dashboard que el autor tenía abierto corría código anterior al arreglo de la
+navegación: Streamlit sin `watchdog` no recarga al cambiar los archivos. Hay que
+reiniciarlo tras cada cambio.
+
+### Estado
+
+84 pruebas pasan, cero errores de consola en las once pantallas y las cinco secciones,
+todas revisadas de verdad esta vez.

@@ -24,9 +24,9 @@ PUERTO = 8599
 URL = f"http://localhost:{PUERTO}"
 DESTINO = Path(tempfile.gettempdir()) / "revision-dashboard"
 
-ANCHO, ALTO = 1600, 1000
+ANCHO, ALTO = 1600, 2400
 ESPERA_CARGA = 25_000
-ESPERA_RENDER = 1200
+ESPERA_RENDER = 1800
 
 SECCIONES = ("Presentación", "Resumen", "Temas", "Tópicos",
              "Contraste con el diccionario", "Explorador")
@@ -54,10 +54,20 @@ def _levantar():
 
 
 def _esperar_contenido(pagina) -> None:
-    """Hasta que Streamlit deje de mostrar el esqueleto de carga."""
+    """Hasta que Streamlit termine de ejecutar y de pintar.
+
+    No basta con que desaparezca el esqueleto de carga: al cambiar de sección
+    Streamlit no lo muestra, y una captura tomada a media ejecución sale con el
+    contenido de la sección anterior debajo del encabezado de la nueva. El indicador
+    de estado —el botón «Stop» de la barra superior— es el que dice si sigue corriendo.
+    """
     pagina.wait_for_selector("[data-testid='stAppViewContainer']", timeout=ESPERA_CARGA)
     pagina.wait_for_function(
         "() => document.querySelectorAll('[data-testid=\"stSkeleton\"]').length === 0",
+        timeout=ESPERA_CARGA,
+    )
+    pagina.wait_for_function(
+        "() => document.querySelectorAll('[data-testid=\"stStatusWidget\"]').length === 0",
         timeout=ESPERA_CARGA,
     )
     pagina.wait_for_timeout(ESPERA_RENDER)

@@ -10,8 +10,8 @@ import streamlit as st
 
 from app import datos
 from src.config import DIMENSIONES
-from src.etiquetas import legible
-from src.paleta import COLOR_POR_TIPO, ORDEN_TIPOS, REJILLA, TINTA_TENUE
+from src.etiquetas import coma, legible, miles
+from src.paleta import COLOR_POR_TIPO, ORDEN_TIPOS, REJILLA, TINTA, TINTA_TENUE
 
 SEMILLA = 42
 N_EJEMPLOS = 5
@@ -67,7 +67,7 @@ def resumen() -> None:
         ("Aptas y en español", "2.430", "con texto, ≥ 50 caracteres y sin duplicados"),
         ("Fragmentos", f"{len(marco):,}".replace(",", "."), "2,4 por reseña en promedio"),
         ("Asignados a un tema", f"{asignados:,}".replace(",", "."),
-         f"{100 * asignados / len(marco):.1f} % del total"),
+         f"{coma(100 * asignados / len(marco), 1)} % del total"),
     ]
     for columna, (titulo, valor, pie) in zip(columnas, embudo):
         columna.metric(titulo, valor)
@@ -82,20 +82,20 @@ def resumen() -> None:
     columnas[1].caption("Agrupación de esos tópicos, hecha a mano tras leerlos")
 
     valor_ami = datos.ami().iloc[0]
-    columnas[2].metric("Acuerdo con el esquema (AMI)", f"{valor_ami['ami']:.2f}")
+    columnas[2].metric("Acuerdo con el esquema (AMI)", coma(valor_ami["ami"]))
     columnas[2].caption("0 = ninguna coincidencia · 1 = coincidencia total")
-    columnas[3].metric("Sin asignar", f"{atipicos['pct']:.1f} %")
-    columnas[3].caption(f"{atipicos['n']} fragmentos que no encajaron en ningún grupo")
+    columnas[3].metric("Sin asignar", f"{coma(atipicos['pct'], 1)} %")
+    columnas[3].caption(f"{miles(atipicos['n'])} fragmentos que no encajaron en ningún grupo")
 
     st.markdown(
-        f"**Cómo leerlo.** Un AMI de **{valor_ami['ami']:.2f}** indica un acuerdo "
+        f"**Cómo leerlo.** Un AMI de **{coma(valor_ami['ami'])}** indica un acuerdo "
         "*moderado*: los temas que emergen de las reseñas y las seis dimensiones "
         "tradicionales describen el mismo corpus, pero no son lo mismo. Hay una parte "
         "de lo que dicen los comensales que el esquema tradicional no recoge."
     )
     st.markdown(
         f"Los fragmentos sin asignar son más críticos que el resto: promedian "
-        f"**{atipicos['rating']:.2f} estrellas** frente a {marco['rating'].mean():.2f} "
+        f"**{coma(atipicos['rating'])} estrellas** frente a {coma(marco['rating'].mean())} "
         f"del corpus completo. Lo que el método no agrupa tiende a ser negativo."
     )
 
@@ -158,16 +158,18 @@ def temas() -> None:
 
     columnas = st.columns(4)
     columnas[0].metric("Fragmentos", int(fila["fragmentos"]))
-    columnas[1].metric("Calificación media", f"{fila['rating']:.2f}")
-    columnas[2].metric("% de 1-2★", f"{fila['pct_1_2_estrellas']:.1f} %")
+    columnas[1].metric("Calificación media", coma(fila["rating"]))
+    columnas[2].metric("% de 1-2★", f"{coma(fila['pct_1_2_estrellas'], 1)} %")
     columnas[3].metric("Tópicos que lo componen", int(fila["n_topicos"]))
 
     st.caption(f"Tipo: {NOMBRE_TIPO[fila['tipo']]} · polaridad {fila['polaridad_dominante']}")
     if fila["subtemas"]:
-        st.caption(f"Subtemas: {fila['subtemas']}")
+        legibles = ", ".join(legible(s.strip()) for s in fila["subtemas"].split(","))
+        st.caption(f"Subtemas: {legibles}")
 
     st.markdown("**Tópicos que componen el tema**")
     del_tema = tabla_topicos[tabla_topicos["tema"] == elegido].sort_values("n", ascending=False)
+    del_tema = del_tema.assign(subtema=del_tema["subtema"].fillna("").map(legible))
     vista_topicos = del_tema[["topico_id", "subtema", "n", "rating",
                               "pct_1_2_estrellas", "terminos"]].rename(columns={
         "topico_id": "Tópico", "subtema": "Subtema", "n": "Fragmentos",
@@ -201,9 +203,9 @@ def topicos() -> None:
 
     columnas = st.columns(4)
     columnas[0].metric("Fragmentos", int(fila["n"]))
-    columnas[0].caption(f"{fila['pct_corpus']:.1f} % del corpus")
-    columnas[1].metric("Calificación media", f"{fila['rating']:.2f}")
-    columnas[1].caption(f"{fila['pct_1_2_estrellas']:.1f} % de reseñas de 1-2★")
+    columnas[0].caption(f"{coma(fila['pct_corpus'], 1)} % del corpus")
+    columnas[1].metric("Calificación media", coma(fila["rating"]))
+    columnas[1].caption(f"{coma(fila['pct_1_2_estrellas'], 1)} % de reseñas de 1-2★")
     columnas[2].metric("Concentración", f"{fila['pct_local_top']:.0f} %")
     columnas[2].caption(f"en «{fila['local_top']}», de {int(fila['n_locales'])} locales")
     columnas[3].metric("Polaridad", fila["polaridad"].capitalize())
@@ -231,9 +233,9 @@ def topicos() -> None:
 
     if pd.notna(fila["c_v"]):
         st.caption(
-            f"Coherencia del tópico (c_v): {fila['c_v']:.3f}. Mide si sus términos "
+            f"Coherencia del tópico (c_v): {coma(fila['c_v'], 3)}. Mide si sus términos "
             "aparecen juntos en los mismos fragmentos; el promedio del modelo es "
-            f"{datos.indicador('c_v'):.3f}."
+            f"{coma(datos.indicador('c_v'), 3)}."
         )
 
     st.markdown("**Cinco fragmentos de ejemplo**")
@@ -278,19 +280,19 @@ def contraste() -> None:
     principal = tabla_ami.iloc[0]
 
     columnas = st.columns(3)
-    columnas[0].metric("AMI", f"{principal['ami']:.3f}")
-    columnas[0].caption(f"sobre {int(principal['n'])} fragmentos")
-    columnas[1].metric("Línea base (azar)", f"{principal['nulo']:.3f}")
+    columnas[0].metric("AMI", coma(principal["ami"], 3))
+    columnas[0].caption(f"sobre {miles(int(principal['n']))} fragmentos")
+    columnas[1].metric("Línea base (azar)", coma(principal["nulo"], 3))
     columnas[1].caption(f"media de {int(principal['repeticiones'])} permutaciones")
-    columnas[2].metric("Diferencia", f"+{principal['exceso']:.3f}")
+    columnas[2].metric("Diferencia", f"+{coma(principal['exceso'], 3)}")
     columnas[2].caption("lo que el acuerdo supera al azar")
 
     st.markdown(
         "**Cómo leerlo.** La línea base se obtiene barajando las etiquetas de dimensión "
         "muchas veces: es el acuerdo que saldría por pura casualidad. Que el AMI real "
-        f"esté **{principal['exceso']:.2f} puntos por encima** confirma que la "
+        f"esté **{coma(principal['exceso'])} puntos por encima** confirma que la "
         "coincidencia es real y no un artefacto. Pero un valor de "
-        f"**{principal['ami']:.2f}**, lejos de 1, dice que **los temas emergentes no "
+        f"**{coma(principal['ami'])}**, lejos de 1, dice que **los temas emergentes no "
         "son una forma distinta de nombrar las seis dimensiones**: hay estructura "
         "compartida y hay estructura propia."
     )
@@ -358,23 +360,28 @@ def _grafico_temas(tabla: pd.DataFrame, marco: pd.DataFrame) -> None:
         tema=datos_grafico["tema"].map(legible),
         bloque=datos_grafico["tipo"].map(lambda t: NOMBRE_TIPO[t].replace("\n", " ")),
         etiqueta=datos_grafico["fragmentos"].map(lambda n: f"{n:,}".replace(",", ".")),
+        inicio=1.0,
     )
 
+    # El nombre del tema va dentro de la barra y el ancho es explícito. Con el ancho
+    # del contenedor, Streamlit aplica `autosize: fit`, el área de trazado se queda sin
+    # espacio y las barras salen con ancho cero.
+    orden = datos_grafico.sort_values("rating", ascending=False)["tema"].tolist()
     orden_bloques = [NOMBRE_TIPO[t].replace("\n", " ") for t in ORDEN_TIPOS
                      if t in set(datos_grafico["tipo"])]
-    colores = alt.Scale(
-        domain=[NOMBRE_TIPO[t].replace("\n", " ") for t in ORDEN_TIPOS],
-        range=[COLOR_POR_TIPO[t] for t in ORDEN_TIPOS],
+    dominio = [1, 5.3]
+    eje_y = alt.Y("tema:N", sort=orden, title=None, axis=None)
+    eje_x = alt.X("rating:Q", title="Calificación media (estrellas)",
+                  scale=alt.Scale(domain=dominio),
+                  axis=alt.Axis(grid=True, gridColor=REJILLA))
+    colores = alt.Color(
+        "bloque:N", legend=None,
+        scale=alt.Scale(domain=[NOMBRE_TIPO[t].replace("\n", " ") for t in ORDEN_TIPOS],
+                        range=[COLOR_POR_TIPO[t] for t in ORDEN_TIPOS]),
     )
 
-    base = alt.Chart(datos_grafico).encode(
-        y=alt.Y("tema:N", sort="-x", title=None,
-                axis=alt.Axis(labelLimit=200, domain=False, ticks=False)),
-        x=alt.X("rating:Q", title="Calificación media (estrellas)",
-                scale=alt.Scale(domain=[1, 5.2]), axis=alt.Axis(grid=True, gridColor=REJILLA)),
-    )
-    barras = base.mark_bar(height=16, cornerRadiusEnd=4).encode(
-        color=alt.Color("bloque:N", scale=colores, legend=None),
+    barras = alt.Chart(datos_grafico).mark_bar(height=26, cornerRadiusEnd=4).encode(
+        y=eje_y, x=eje_x, color=colores,
         tooltip=[
             alt.Tooltip("tema:N", title="Tema"),
             alt.Tooltip("bloque:N", title="Tipo"),
@@ -383,26 +390,28 @@ def _grafico_temas(tabla: pd.DataFrame, marco: pd.DataFrame) -> None:
             alt.Tooltip("pct_1_2_estrellas:Q", title="% de 1-2★", format=".1f"),
         ],
     )
-    numeros = base.mark_text(align="left", dx=6, fontSize=11, color=TINTA_TENUE).encode(
-        text="etiqueta:N"
-    )
-    referencia = (
-        alt.Chart(pd.DataFrame({"x": [media_corpus]}))
-        .mark_rule(strokeDash=[4, 3], color=TINTA_TENUE, strokeWidth=1.5)
-        .encode(x="x:Q")
-    )
+    nombres = alt.Chart(datos_grafico).mark_text(
+        align="left", dx=10, fontSize=13, fontWeight=600, color=TINTA
+    ).encode(y=eje_y, x=alt.X("inicio:Q", scale=alt.Scale(domain=dominio)), text="tema:N")
+    cuentas = alt.Chart(datos_grafico).mark_text(
+        align="left", dx=8, fontSize=12, color=TINTA_TENUE
+    ).encode(y=eje_y, x=eje_x, text="etiqueta:N")
+    referencia = alt.Chart(pd.DataFrame({"x": [media_corpus]})).mark_rule(
+        strokeDash=[4, 3], color=TINTA_TENUE, strokeWidth=1.5
+    ).encode(x=alt.X("x:Q", scale=alt.Scale(domain=dominio)))
 
     grafico = (
-        (barras + numeros + referencia)
-        .properties(width="container", height=alt.Step(26))
+        (barras + nombres + cuentas + referencia)
+        .properties(width=780, height=alt.Step(34))
         .facet(row=alt.Row("bloque:N", title=None, sort=orden_bloques,
                            header=alt.Header(labelAnchor="start", labelFontWeight="bold",
-                                             labelFontSize=12, labelPadding=4)))
+                                             labelFontSize=13, labelPadding=6,
+                                             labelOrient="top")))
         .resolve_scale(y="independent")
     )
-    st.altair_chart(grafico, width="stretch")
+    st.altair_chart(grafico, width="content")
     st.caption(f"El número junto a cada barra es la cantidad de fragmentos. "
-               f"Línea punteada: media del corpus, {media_corpus:.2f} estrellas.")
+               f"Línea punteada: media del corpus, {coma(media_corpus)} estrellas.")
 
     st.markdown(
         "**Ningún atributo emergente con tópico propio resulta negativo.** Los cuatro "
@@ -430,7 +439,7 @@ def _resultados(tabla: pd.DataFrame, segundos: float, titulo: str, nota: str) ->
     for fila in tabla.itertuples(index=False):
         st.markdown(f"> {fila.texto}")
         st.caption(
-            f"similitud {fila.similitud:.3f} · {fila.topico} {fila.tema} · "
+            f"similitud {coma(fila.similitud, 3)} · {fila.topico} {fila.tema} · "
             f"{fila.rating}★ · {fila.establecimiento}"
         )
 
@@ -487,6 +496,7 @@ def explorador() -> None:
         "palabra. TF-IDF es más literal y más rápido; los embeddings son más flexibles "
         "y a veces demasiado, porque también acercan cosas que solo se parecen de lejos."
     )
+    st.caption(nota_metodos if semantico else nota_metodos.split(" Los embeddings")[0])
 
     if not consulta:
         return

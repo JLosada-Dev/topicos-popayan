@@ -86,6 +86,16 @@ def legible(nombre: str) -> str:
     return NOMBRE_LEGIBLE.get(nombre, nombre)
 
 
+def coma(numero: float, decimales: int = 2) -> str:
+    """Decimal con coma, que es el separador del español."""
+    return f"{numero:.{decimales}f}".replace(".", ",")
+
+
+def miles(numero: int) -> str:
+    """Separador de miles con punto, a la española."""
+    return f"{numero:,}".replace(",", ".")
+
+
 def polaridad(rating_medio: float) -> str:
     if rating_medio >= UMBRAL_POSITIVA:
         return POSITIVA

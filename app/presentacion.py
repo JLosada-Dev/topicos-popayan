@@ -11,7 +11,7 @@ import pandas as pd
 import streamlit as st
 
 from app import datos
-from src.etiquetas import legible
+from src.etiquetas import coma as _coma, legible
 from src.paleta import COLOR_POR_TIPO, REJILLA, TINTA, TINTA_TENUE
 
 CLAVE_PANTALLA = "pantalla"
@@ -48,11 +48,6 @@ ESTILO = """
 
 def _abrir(texto: str) -> None:
     st.markdown(f'{ESTILO}<div class="pres">{texto}</div>', unsafe_allow_html=True)
-
-
-def _coma(numero: float, decimales: int = 2) -> str:
-    """Decimal con coma, que es el separador del español."""
-    return f"{numero:.{decimales}f}".replace(".", ",")
 
 
 def _cifra(valor: str, etiqueta: str, pequena: bool = False) -> str:

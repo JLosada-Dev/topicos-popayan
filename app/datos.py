@@ -98,8 +98,11 @@ def resumen_atipicos() -> dict:
 
 def nombre_largo(fila) -> str:
     """Etiqueta legible de un tópico: «T4 · comida» o «T15 · comida / pizza»."""
+    from src.etiquetas import legible
+
     subtema = fila["subtema"] if isinstance(fila["subtema"], str) else ""
-    return f"T{fila['topico_id']} · {fila['tema']}" + (f" / {subtema}" if subtema else "")
+    nombre = f"T{fila['topico_id']} · {legible(fila['tema'])}"
+    return nombre + (f" / {legible(subtema)}" if subtema else "")
 
 
 def figura(nombre: str) -> Path:

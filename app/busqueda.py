@@ -12,6 +12,7 @@ El modelo se carga de forma **diferida**: solo cuando el usuario elige ese méto
 que el arranque del panel no lo pague.
 """
 
+import importlib.util
 import time
 
 import numpy as np
@@ -47,21 +48,24 @@ def falta_tfidf() -> bool:
     return any(not (DATOS_PROCESADOS / n).exists() for n in ARCHIVOS_TFIDF)
 
 
+@st.cache_resource
 def hay_embeddings() -> bool:
     """Si la búsqueda por significado se puede ofrecer en este despliegue.
 
     Necesita `sentence-transformers`, que arrastra torch: más de 1 GB instalado. En
     local está; en Streamlit Community Cloud no cabe en la memoria disponible, así que
     allí el explorador ofrece solo TF-IDF y lo dice en pantalla.
+
+    Se comprueba con `find_spec`, que localiza el paquete sin ejecutarlo: importarlo
+    tarda 5,3 s y esta función corre en cada render de la sección.
     """
     ruta_matriz, _ = rutas(MODELO_EMBEDDINGS)
     if not ruta_matriz.exists():
         return False
     try:
-        import sentence_transformers  # noqa: F401
-    except ImportError:
+        return importlib.util.find_spec("sentence_transformers") is not None
+    except (ImportError, ValueError):
         return False
-    return True
 
 
 def precargar_embeddings() -> None:
