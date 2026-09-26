@@ -6,6 +6,7 @@ quedan como anexo: aquí se cuenta el estudio entero de corrido, para leerlo de 
 """
 
 from scripts.notebooks_contenido import code, md
+from src.config import URL_DASHBOARD
 
 PROYECTO_FINAL = [
     md("""
@@ -524,8 +525,13 @@ azar da 0,00 en esa misma partición.
 7. **Los temas transversales no son tópicos**, y su presencia se sostiene con reglas de
    recuperación y lectura, no con el modelo.
 """),
-    md("""
+    md(f"""
 ---
+
+**Los resultados también se pueden recorrer en el dashboard, sin instalar nada:
+[{URL_DASHBOARD.removeprefix("https://")}]({URL_DASHBOARD}).** Lleva esta misma
+presentación, las tablas de temas y tópicos con sus ejemplos, y un buscador sobre el
+corpus.
 
 Todos los recursos están disponibles en el repositorio del proyecto,
 [github.com/JLosada-Dev/topicos-popayan](https://github.com/JLosada-Dev/topicos-popayan).
@@ -544,6 +550,6 @@ Las rutas de la tabla son relativas a su raíz.
 | `docs/decisiones_metodologicas.md` | 15 decisiones con su alternativa y por qué se descartó |
 | `docs/bitacora.md` | Trazabilidad completa, con fecha y cifras |
 | `dataset/` | Los cinco archivos de datos con su diccionario y sus hashes |
-| `app/` | El dashboard: `uv run streamlit run app/main.py` |
+| `app/` | El dashboard, en línea en [{URL_DASHBOARD.removeprefix("https://")}]({URL_DASHBOARD}) o en local con `uv run streamlit run app/main.py` |
 """),
 ]
