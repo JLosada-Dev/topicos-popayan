@@ -2372,3 +2372,41 @@ primera celda descarga el proyecto.
 
 A cambio, la descripción del notebook en el README del paquete se acortó: las
 instrucciones viven en el propio notebook, que es donde se leen.
+
+---
+
+## 2026-09-26 — Despliegue del dashboard en Streamlit Community Cloud
+
+El dashboard quedó publicado en **https://topicos-popayan.streamlit.app**, para que
+quien revise pueda recorrer los resultados sin instalar nada.
+
+**Verificación previa al despliegue.** Cloud clona el repositorio e instala solo
+`requirements.txt`, así que se replicó ese entorno antes de publicar: un intérprete
+limpio con las seis dependencias declaradas, sirviendo un clon recién sacado de git —no
+la carpeta de trabajo, para que ninguna dependencia local ni archivo sin versionar
+salvara la prueba—. Resultados:
+
+- Las 6 secciones y las 11 pantallas renderizan, con **0 errores de consola**.
+- `torch`, `sentence_transformers`, `matplotlib` y `bertopic` ausentes del entorno.
+- Los 23 archivos de datos que leen `app/` y `src/` están versionados. Los tres que
+  faltan en el clon (`idioma_resenas`, `dimensiones_aptas_es`, `sentimiento_fragmentos`)
+  los referencia `src/preparacion.py`, que el dashboard no usa.
+- **Pico de memoria 272 MB** frente al límite de ~1024 MB del plan gratuito.
+
+Las capturas del clon salieron idénticas byte a byte a las del entorno completo.
+
+**Limitación del despliegue.** En línea, el Explorador ofrece solo búsqueda por
+coincidencia de palabras: la búsqueda por significado necesita el modelo de embeddings,
+que excede la memoria disponible. La app lo detecta y lo explica en pantalla en vez de
+fallar. En local siguen estando los dos métodos.
+
+**URL.** Se renombró el subdominio que Cloud asigna por defecto
+(`topicos-popayan-m8qh2cwnaodd4o9zbak55a`) antes de escribirlo en ningún sitio, porque
+queda impreso en el PDF de la presentación y cambiarlo después lo dejaría muerto.
+
+La URL vive como constante `URL_DASHBOARD` en `src/config.py`, y de ahí la toman el
+README del paquete, la pantalla de cierre de la presentación y el PDF exportado.
+
+**No verificable desde aquí:** la comprobación remota con navegador headless no llega a
+cargar la app (Cloud sirve el caparazón pero no hidrata para clientes automatizados). El
+funcionamiento en línea lo confirmó el autor en un navegador real.

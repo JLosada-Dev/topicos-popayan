@@ -11,6 +11,7 @@ import pandas as pd
 import streamlit as st
 
 from app import datos
+from src.config import URL_DASHBOARD
 from src.etiquetas import coma as _coma, legible
 from src.paleta import COLOR_POR_TIPO, REJILLA, TINTA, TINTA_TENUE
 
@@ -380,6 +381,11 @@ comensales, pero no todo.</p>
 <p>Un 13 % del corpus habla de atributos que no contempla, y lo que el método no agrupa
 es sistemáticamente lo más crítico. <strong>Quien lea solo las seis dimensiones tendrá
 una imagen más amable de la que sus clientes sostienen.</strong></p>
+""")
+    # Cierra con la URL para que quede tambien en el PDF exportado, que es lo que se
+    # entrega: quien lo lea puede abrir el dashboard y comprobar las cifras por su cuenta
+    _abrir(f"""
+<p class="pie">Explora los resultados en <strong>{URL_DASHBOARD}</strong></p>
 """)
 
 

@@ -41,6 +41,9 @@ BITACORA = RAIZ / "docs" / "bitacora.md"
 
 MANIFIESTO = DATOS_EXTERNOS / "manifiesto.csv"
 
+# Dashboard desplegado en Streamlit Community Cloud, para quien revise sin instalar nada
+URL_DASHBOARD = "https://topicos-popayan.streamlit.app"
+
 # Dimensiones definidas a priori, en el orden del diccionario del original
 DIMENSIONES = ("ambiente", "comida", "espera", "patrimonio", "precio", "servicio")
 

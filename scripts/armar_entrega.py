@@ -12,7 +12,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from src.config import RAIZ  # noqa: E402
+from src.config import RAIZ, URL_DASHBOARD  # noqa: E402
 
 DESTINO = RAIZ / "entrega"
 REPOSITORIO = "https://github.com/JLosada-Dev/topicos-popayan"
@@ -43,11 +43,15 @@ crítico.
 
 ## Por dónde empezar
 
-1. **`3_presentacion/presentacion.pdf`** — el recorrido completo en once pantallas, de
+1. **{URL_DASHBOARD}** — el dashboard, si prefieres
+   recorrer los resultados de forma interactiva en vez de leerlos. No hay que instalar
+   nada: se abre en el navegador. Lleva la misma presentación, más las tablas
+   explorables y un buscador sobre el corpus.
+2. **`3_presentacion/presentacion.pdf`** — el recorrido completo en once pantallas, de
    diez minutos de lectura.
-2. **`1_notebook/html/proyecto_final.html`** — el estudio con su desarrollo, sus cifras
+3. **`1_notebook/html/proyecto_final.html`** — el estudio con su desarrollo, sus cifras
    y sus figuras.
-3. **`2_dataset/diccionario_datos.md`** — qué hay en cada archivo de datos, columna por
+4. **`2_dataset/diccionario_datos.md`** — qué hay en cada archivo de datos, columna por
    columna, antes de abrir ningún CSV.
 
 ## Qué hay en cada carpeta
@@ -83,6 +87,22 @@ reseñas ha escrito cada persona, que no permite reidentificarla.
 
 Dentro del análisis, los nombres de establecimiento se reemplazan por el marcador
 `[LOCAL]`, para que el modelo agrupe por lo que se dice y no por de quién se habla.
+
+## El dashboard en línea
+
+{URL_DASHBOARD}
+
+Las mismas once pantallas de la presentación, más cuatro secciones para explorar por tu
+cuenta: los catorce temas con sus tópicos y ejemplos, el mapa de calor del contraste con
+el diccionario, y un buscador que recupera fragmentos del corpus por lo que escribas.
+
+Se abre en el navegador, sin instalar nada. Solo lee los resultados ya calculados, así
+que responde en segundos. Si lleva días sin visitas puede tardar un minuto en despertar
+la primera vez.
+
+En el buscador, la opción de búsqueda **por significado** solo aparece al ejecutarlo en
+local: necesita el modelo de embeddings, que excede la memoria del despliegue gratuito.
+En línea queda la búsqueda por coincidencia de palabras.
 
 ## Repositorio
 

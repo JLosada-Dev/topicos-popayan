@@ -71,6 +71,10 @@ Los cuatro por etapa quedan como **anexo** del consolidado.
 
 ## El dashboard
 
+**Desplegado, sin instalar nada: <https://topicos-popayan.streamlit.app>**
+
+O en local:
+
 ```bash
 uv run streamlit run app/main.py
 ```
@@ -88,6 +92,10 @@ nada ni carga el modelo.
 | **Explorador** | Buscador libre, con coincidencia de palabras y con significado, comparables |
 
 Cada indicador lleva una línea que lo explica sin jerga.
+
+En el despliegue, el Explorador ofrece solo la búsqueda por coincidencia de palabras: la
+búsqueda por significado necesita el modelo de embeddings, que no cabe en la memoria del
+plan gratuito. En local están las dos, comparables lado a lado.
 
 La sección **Presentación** sigue la cadena contexto → problema → objetivos → pregunta →
 datos → técnicas → resultados → atributos emergentes → insights → recomendaciones →
