@@ -25,6 +25,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src.config import RAIZ  # noqa: E402
 
 ORIGEN = RAIZ / "notebooks"
+ORIGEN_COLAB = RAIZ / "notebooks" / "colab"
 DESTINO_HTML = RAIZ / "docs" / "notebooks_html"
 
 NOTEBOOKS = ("proyecto_final", "00_preparacion", "01_caracterizacion",
@@ -47,9 +48,9 @@ def _nbconvert(*argumentos: str) -> None:
         raise RuntimeError(resultado.stderr[-900:])
 
 
-def ejecutar_en_sitio(nombre: str) -> Path:
+def ejecutar_en_sitio(nombre: str, carpeta: Path = ORIGEN, sufijo: str = "") -> Path:
     """Ejecuta el notebook y guarda sus salidas en el mismo archivo."""
-    ruta = ORIGEN / f"{nombre}.ipynb"
+    ruta = carpeta / f"{nombre}{sufijo}.ipynb"
     _nbconvert(
         "--to", "notebook", "--execute", "--inplace",
         f"--ExecutePreprocessor.timeout={TIEMPO_MAXIMO}",
@@ -111,9 +112,17 @@ def main() -> None:
         ruido = limpiar_stderr(cuaderno)
         html = exportar_html(nombre)
         hacer_autocontenido(html)
+        # Los de Colab se ejecutan tambien: su deteccion de entorno cae en la rama
+        # local, asi que un revisor los abre con resultados a la vista sin tener que
+        # correr nada. El HTML se genera solo desde los locales, que son identicos
+        # salvo el preambulo.
+        colab = ejecutar_en_sitio(nombre, ORIGEN_COLAB, "_colab")
+        limpiar_stderr(colab)
+
         print(
             f"  {nombre:<20} ipynb {cuaderno.stat().st_size / 1024:>6.0f} KB "
             f"({contar_salidas(cuaderno)} salidas, {ruido} de ruido quitadas)  ·  "
+            f"colab {contar_salidas(colab)} salidas  ·  "
             f"html {html.stat().st_size / 1024:>6.0f} KB"
         )
 

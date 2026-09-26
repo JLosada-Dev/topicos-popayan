@@ -1818,3 +1818,31 @@ notebook consolidado y `app/`, con el comando para lanzar el dashboard.
 
 Regenerados y reejecutados los diez notebooks; la línea llega a los tres formatos
 —`.ipynb`, Colab y HTML—.
+
+---
+
+## 2026-09-25 — También se ejecutan los notebooks de Colab
+
+Antes se dejaban sin salidas a propósito, porque están pensados para ejecutarse en Colab
+y unas salidas producidas en local podían despistar. El criterio cambia: **un revisor que
+abra cualquiera de los diez debe ver resultados sin tener que ejecutar nada.**
+
+`scripts/exportar_notebooks.py` ejecuta ahora también los de `notebooks/colab/`. Su
+detección de entorno cae en la rama local, así que la primera celda muestra «no se
+detectó Colab: se asume el entorno de uv, no se instala nada» y la tercera confirma que
+los datos están. Es información honesta: enseña que el notebook funciona en los dos
+entornos.
+
+El HTML se sigue generando solo desde los locales, que son idénticos salvo el preámbulo.
+
+**Los diez notebooks quedan con todas sus celdas ejecutadas y cero errores.**
+
+### Qué entregar a un revisor
+
+| Destinatario | Archivo |
+|---|---|
+| Informe y revisor | `notebooks/proyecto_final.ipynb` |
+| Revisor sin Jupyter | `docs/notebooks_html/proyecto_final.html` |
+| Quien quiera ejecutarlo sin instalar | `notebooks/colab/proyecto_final_colab.ipynb` |
+
+Los cuatro por etapa son anexo en los tres casos.
