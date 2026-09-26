@@ -190,8 +190,13 @@ def _p6_tecnicas() -> None:
 hora» son dos opiniones, no una.</li>
 <li><strong>Anonimizar.</strong> Los nombres de local se reemplazan por
 <code>[LOCAL]</code>, para agrupar por lo que se dice y no por de quién se habla.</li>
-<li><strong>Representar.</strong> Embeddings multilingües de 384 dimensiones.</li>
-<li><strong>Agrupar.</strong> BERTopic: UMAP + HDBSCAN + c-TF-IDF.</li>
+<li><strong>Representar.</strong> <em>Embeddings</em>: cada fragmento se convierte en una
+lista de 384 números que resume su significado, de modo que dos frases que dicen lo mismo
+con palabras distintas quedan cerca.</li>
+<li><strong>Agrupar.</strong> <em>BERTopic</em> encadena tres piezas: <em>UMAP</em>
+comprime esos 384 números a 5 sin perder la vecindad, <em>HDBSCAN</em> busca zonas densas
+y las declara grupos —y deja fuera lo que no encaja—, y <em>c-TF-IDF</em> nombra cada
+grupo con las palabras que son suyas y de ningún otro.</li>
 <li><strong>Etiquetar.</strong> Los 41 tópicos se agrupan a mano en 14 temas, tras
 leerlos.</li>
 </ol>
@@ -255,53 +260,63 @@ def _grafico_emergentes(temas: pd.DataFrame, marco: pd.DataFrame) -> None:
     """Solo los atributos emergentes, por calificación, con la media del corpus."""
     import altair as alt
 
+    ORIGEN = 1.0          # la escala empieza en una estrella, no en cero
+    TOPE = 5.4
+
     media = float(marco["rating"].mean())
     sub = temas[temas["tipo"] == "atributo_nuevo"].assign(
         tema=lambda d: d["tema"].map(legible),
-        etiqueta=lambda d: d["fragmentos"].map(lambda n: f"{n:,}".replace(",", ".")),
+        base=ORIGEN,
+        estrellas=lambda d: d["rating"].map(lambda v: _coma(v)),
+        cuantos=lambda d: d["fragmentos"].map(
+            lambda n: f"{n:,} fragmentos".replace(",", ".")),
     )
-    # El nombre del tema va DENTRO de la barra, no en el eje. Vega calcula el espacio
-    # del eje a partir del ancho disponible y con nombres largos —«infraestructura y
-    # espacio»— los recorta contra el borde del contenedor. Dentro de la barra siempre
-    # caben y además se leen mejor proyectados.
+
+    # La barra se ancla con `x2` a un origen explícito. Sin él, Vega la dibuja desde el
+    # cero de la escala, que queda fuera del dominio: la recorta contra el borde y las
+    # longitudes dejan de ser proporcionales a la calificación.
     #
-    # El orden se fija como lista en vez de con `sort="-x"`, porque la capa del nombre
-    # no tiene codificación `x` de la que ordenar.
+    # El nombre del tema va dentro de la barra: en el eje, con nombres largos como
+    # «infraestructura y espacio», Vega los recorta contra el borde del contenedor.
     orden = sub.sort_values("rating", ascending=False)["tema"].tolist()
     eje_y = alt.Y("tema:N", sort=orden, title=None, axis=None)
-    eje_x = alt.X("rating:Q", title="Calificación media (estrellas)",
-                  scale=alt.Scale(domain=[1, 5.2]),
+    escala = alt.Scale(domain=[ORIGEN, TOPE])
+    eje_x = alt.X("rating:Q", title="Calificación media (estrellas)", scale=escala,
                   axis=alt.Axis(grid=True, gridColor=REJILLA, labelFontSize=14,
-                                titleFontSize=15))
+                                titleFontSize=15, values=[1, 2, 3, 4, 5]))
 
     barras = alt.Chart(sub).mark_bar(
-        height=48, cornerRadiusEnd=5, color=COLOR_POR_TIPO["atributo_nuevo"]
-    ).encode(y=eje_y, x=eje_x)
-    nombres = alt.Chart(sub.assign(inicio=1.0)).mark_text(
-        align="left", dx=14, fontSize=19, fontWeight=600, color=TINTA
-    ).encode(y=eje_y, x=alt.X("inicio:Q", scale=alt.Scale(domain=[1, 5.2])),
-             text="tema:N")
-    cuentas = alt.Chart(sub).mark_text(
-        align="left", dx=10, fontSize=17, color=TINTA_TENUE
-    ).encode(y=eje_y, x=eje_x, text="etiqueta:N")
+        height=52, cornerRadiusEnd=5, color=COLOR_POR_TIPO["atributo_nuevo"]
+    ).encode(y=eje_y, x=eje_x, x2="base:Q")
+    nombres = alt.Chart(sub).mark_text(
+        align="left", dx=16, fontSize=19, fontWeight=600, color=TINTA
+    ).encode(y=eje_y, x=alt.X("base:Q", scale=escala), text="tema:N")
+    # Al final de la barra va la calificación, que es lo que mide el eje. El número de
+    # fragmentos es un dato secundario y va debajo, en gris y más pequeño.
+    estrellas = alt.Chart(sub).mark_text(
+        align="left", dx=12, dy=-8, fontSize=20, fontWeight=700, color=TINTA
+    ).encode(y=eje_y, x=eje_x, text="estrellas:N")
+    cuantos = alt.Chart(sub).mark_text(
+        align="left", dx=12, dy=12, fontSize=13, color=TINTA_TENUE
+    ).encode(y=eje_y, x=eje_x, text="cuantos:N")
     referencia = alt.Chart(pd.DataFrame({"x": [media]})).mark_rule(
         strokeDash=[5, 4], color=TINTA_TENUE, strokeWidth=2
-    ).encode(x=alt.X("x:Q", scale=alt.Scale(domain=[1, 5.2])))
+    ).encode(x=alt.X("x:Q", scale=escala))
 
-    grafico = (barras + nombres + cuentas + referencia).properties(width=880, height=300)
+    grafico = (barras + nombres + estrellas + cuantos + referencia).properties(
+        width=820, height=300)
     st.altair_chart(grafico, width="content")
+
     izquierda, derecha = st.columns([2, 3])
     izquierda.markdown(
         f'{ESTILO}<div class="pres"><p class="destacado">Ninguno resulta negativo.</p>'
-        f'<p class="pie">El número es la cantidad de fragmentos. Línea punteada: media '
-        f'del corpus, {_coma(media)} estrellas.</p></div>', unsafe_allow_html=True)
+        f'<p class="pie">La línea punteada es la media del corpus, {_coma(media)} '
+        f'estrellas.</p></div>', unsafe_allow_html=True)
     derecha.markdown(
         f'{ESTILO}<div class="pres"><p>No es que no haya quejas sobre atributos nuevos: '
         f'inocuidad (1,62) y cobro (1,87) son de lo peor del corpus, pero '
         f'<strong>no llegaron a formar tópico</strong>.</p></div>',
         unsafe_allow_html=True)
-
-
 def _p9_insights(marco: pd.DataFrame) -> None:
     _abrir("<h1>Insights</h1>")
     izquierda, derecha = st.columns([3, 2])
@@ -345,9 +360,9 @@ def _p11_cierre() -> None:
     _abrir("""
 <h1>Limitaciones</h1>
 <ul>
-<li>La <strong>coherencia léxica es baja</strong>: los fragmentos tienen 10 palabras de
-mediana y los términos de un tópico rara vez coaparecen. La validez se sostiene en la
-lectura, no en el indicador.</li>
+<li>Los <strong>indicadores de coherencia léxica resultan poco informativos</strong> con
+fragmentos de diez palabras de mediana, porque los términos de un tópico rara vez caben
+en el mismo texto. La validez se sostiene en la lectura, no en el indicador.</li>
 <li>Los <strong>temas transversales se miden con reglas de piso</strong>: acotan el orden
 de magnitud, no lo miden.</li>
 <li>Cada fragmento <strong>hereda la calificación de su reseña</strong>, así que no son

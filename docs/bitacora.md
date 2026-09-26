@@ -2122,3 +2122,53 @@ reiniciarlo tras cada cambio.
 
 84 pruebas pasan, cero errores de consola en las once pantallas y las cinco secciones,
 todas revisadas de verdad esta vez.
+
+---
+
+## 2026-09-25 — Tres correcciones en la presentación
+
+### El gráfico de atributos emergentes no era proporcional
+
+El autor detectó que las barras no guardaban proporción con la calificación. Se midió en
+píxeles sobre la captura, en vez de estimarlo a ojo:
+
+| Barra | Fin observado | Fin esperado | Error |
+|---|---:|---:|---:|
+| ocasión de consumo · 4,58 | 1.151 | 1.151 | 0 |
+| referente en la ciudad · 4,55 | 1.146 | 1.146 | 0 |
+| infraestructura y espacio · 3,69 | 999 | 959 | **+40** |
+| medios de pago · 3,26 | 925 | 867 | **+58** |
+
+**La causa.** `mark_bar` con solo una codificación `x` dibuja la barra desde el cero de
+la escala. Como el dominio empieza en 1, el cero queda fuera y Vega recorta la barra
+contra el borde del área de trazado, con lo que su longitud deja de ser proporcional al
+valor. Las barras cortas se alargaban más que las largas.
+
+**La corrección.** Se ancla el origen explícitamente con `x2` a una columna `base = 1.0`.
+Medido de nuevo: **error máximo de 1 píxel** en las cuatro barras.
+
+**El número al final también era engañoso**: mostraba los fragmentos mientras el eje
+estaba en estrellas. Ahora al final de la barra va **la calificación** —que es lo que
+mide el eje— en grande y en negro, y el número de fragmentos debajo, más pequeño y en
+gris, como dato secundario.
+
+### Glosa de las técnicas
+
+La pantalla 6 nombraba BERTopic, UMAP, HDBSCAN y c-TF-IDF sin explicar qué hacen. Ahora
+cada una lleva su glosa: los *embeddings* convierten cada fragmento en 384 números que
+resumen su significado, *UMAP* los comprime a 5 sin perder la vecindad, *HDBSCAN* busca
+zonas densas y las declara grupos —dejando fuera lo que no encaja—, y *c-TF-IDF* nombra
+cada grupo con las palabras que son suyas y de ningún otro.
+
+### Primera limitación, reescrita
+
+Atribuye la limitación a la medida y no al resultado, con el texto que dio el autor: los
+indicadores de coherencia léxica **resultan poco informativos** con fragmentos de diez
+palabras de mediana, porque los términos de un tópico rara vez caben en el mismo texto.
+
+### Verificación
+
+Los tres cambios revisados con el script, sobre la página renderizada. La proporción de
+las barras se comprobó midiendo píxeles, no a ojo. Al reescribir la función del gráfico
+se perdió el bloque de cierre —«Ninguno resulta negativo»— y se repuso, lo que la
+revisión visual detectó. 84 pruebas pasan, cero errores de consola.
