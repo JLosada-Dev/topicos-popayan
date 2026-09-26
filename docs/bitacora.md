@@ -1794,3 +1794,27 @@ Comprobaciones: sin rutas personales, sin credenciales, un solo correo —el del
 propósito—.
 
 **El push queda preparado pero no ejecutado**, a la espera de revisar el commit.
+
+---
+
+## 2026-09-25 — Contexto de los anexos en el notebook consolidado
+
+El autor añadió a mano, al final de `proyecto_final.ipynb`, una línea que da contexto a
+la tabla de anexos: dice que todos los recursos están en el repositorio y que **las rutas
+de la tabla son relativas a su raíz**. Sin ella, la tabla listaba rutas sin decir
+respecto a qué.
+
+**La edición se subió a la fuente.** Vivía solo en el `.ipynb`, y
+`scripts/generar_notebooks.py` reconstruye los notebooks desde
+`scripts/notebook_final.py`: la siguiente regeneración la habría borrado. Ahora está en
+la fuente y sobrevive.
+
+Dos ajustes menores al integrarla: la URL se convirtió en enlace de Markdown, para que
+GitHub y el HTML la rendericen como tal, y se quitó el espacio que quedaba antes del
+punto final.
+
+Aprovechando el cambio se completó la tabla con los dos recursos que faltaban: el propio
+notebook consolidado y `app/`, con el comando para lanzar el dashboard.
+
+Regenerados y reejecutados los diez notebooks; la línea llega a los tres formatos
+—`.ipynb`, Colab y HTML—.

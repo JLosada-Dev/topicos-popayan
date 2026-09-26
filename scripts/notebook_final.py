@@ -525,10 +525,15 @@ azar da 0,00 en esa misma partición.
     md("""
 ---
 
+Todos los recursos están disponibles en el repositorio del proyecto,
+[github.com/JLosada-Dev/topicos-popayan](https://github.com/JLosada-Dev/topicos-popayan).
+Las rutas de la tabla son relativas a su raíz.
+
 ## Anexos
 
 | Recurso | Qué contiene |
 |---|---|
+| `notebooks/proyecto_final.ipynb` | Este mismo notebook, el estudio completo |
 | `notebooks/00_preparacion.ipynb` | Del corpus a los fragmentos, con la validación de las etiquetas |
 | `notebooks/01_caracterizacion.ipynb` | Objetivo 1: composición, calidad, distribuciones |
 | `notebooks/02_topicos.ipynb` | Objetivo 2: embeddings, BERTopic, sensibilidad |
@@ -537,5 +542,6 @@ azar da 0,00 en esa misma partición.
 | `docs/decisiones_metodologicas.md` | 15 decisiones con su alternativa y por qué se descartó |
 | `docs/bitacora.md` | Trazabilidad completa, con fecha y cifras |
 | `dataset/` | Los cinco archivos de datos con su diccionario y sus hashes |
+| `app/` | El dashboard: `uv run streamlit run app/main.py` |
 """),
 ]
